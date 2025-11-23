@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Appointment | Healthcare Management System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <style>
+    :root {
+      --primary: #1565c0;
+      --primary-dark: #0d47a1;
+      --secondary: #4CAF50;
+      --light: #e3f2fd;
+      --white: #ffffff;
+      --shadow: rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #e3f2fd, #ffffff);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    /* Background Animation */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+    
+    .bg-animation::before {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(21, 101, 192, 0.05) 0%, rgba(13, 71, 161, 0.05) 100%);
+      animation: rotate 30s linear infinite;
+    }
+    
+    @keyframes rotate {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    header {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      margin-bottom: 20px;
+      animation: slideDown 0.8s ease;
+    }
+    
+    @keyframes slideDown {
+      0% { transform: translateY(-100%); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--primary);
+    }
+
+    .logo i {
+      font-size: 2rem;
+      color: var(--secondary);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    
+    .logo-text {
+      font-weight: 600;
+      font-size: 1.5rem;
+      color: var(--primary);
+    }
+
+    .home-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--primary);
+      font-weight: 500;
+      padding: 8px 15px;
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: var(--transition);
+    }
+    
+    .home-btn:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-3px);
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.9);
+      width: 100%;
+      max-width: 500px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      padding: 30px;
+      animation: fadeInUp 1s ease;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 25px;
+      font-weight: 600;
+      font-size: 28px;
+      position: relative;
+      padding-bottom: 10px;
+    }
+    
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 3px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .form-group {
+      position: relative;
+    }
+
+    input, textarea, select {
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      width: 100%;
+      transition: var(--transition);
+      background: rgba(255, 255, 255, 0.8);
+    }
+    
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.2);
+      transform: translateY(-2px);
+    }
+    
+    label {
+      position: absolute;
+      top: -10px;
+      left: 15px;
+      background: white;
+      padding: 0 8px;
+      font-size: 14px;
+      color: var(--primary);
+      font-weight: 500;
+      opacity: 0;
+      transition: var(--transition);
+    }
+    
+    .form-group:focus-within label {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .input-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9e9e9e;
+      transition: var(--transition);
+    }
+    
+    .form-group:focus-within .input-icon {
+      color: var(--primary);
+    }
+
+    button {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 5px 15px rgba(21, 101, 192, 0.4);
+      position: relative;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(21, 101, 192, 0.5);
+    }
+    
+    button:active {
+      transform: translateY(1px);
+    }
+    
+    button::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 5px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.5);
+      opacity: 0;
+      border-radius: 100%;
+      transform: scale(1, 1) translate(-50%);
+      transform-origin: 50% 50%;
+    }
+    
+    button:focus:not(:active)::after {
+      animation: ripple 1s ease-out;
+    }
+    
+    @keyframes ripple {
+      0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+      }
+      100% {
+        transform: scale(20, 20);
+        opacity: 0;
+      }
+    }
+
+    .appointment-details {
+      display: none;
+      margin-top: 25px;
+      padding: 25px;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #f5f9ff, #e8f5e9);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      border-left: 5px solid var(--secondary);
+      animation: fadeIn 0.8s ease;
+    }
+    
+    .appointment-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    
+    .appointment-header h3 {
+      color: var(--primary);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .appointment-header i {
+      color: var(--secondary);
+      animation: bounce 1s infinite;
+    }
+    
+    .appointment-details-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px dashed #e0e0e0;
+    }
+    
+    .detail-label {
+      font-weight: 500;
+      color: #555;
+      flex: 1;
+    }
+    
+    .detail-value {
+      font-weight: 600;
+      color: var(--primary);
+      flex: 1;
+      text-align: right;
+    }
+    
+    .reason-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+    }
+    
+    .reason-value {
+      text-align: left;
+      font-weight: 400;
+      color: #333;
+      line-height: 1.5;
+    }
+    
+    .appointment-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .appointment-actions button {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      margin-top: 0;
+    }
+    
+    .print-btn {
+      background: linear-gradient(135deg, #ff9800, #f57c00);
+      box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
+    }
+    
+    .new-appointment-btn {
+      background: linear-gradient(135deg, var(--secondary), #388e3c);
+      box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(10px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+    
+    .floating-elements {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    .floating-element {
+      position: absolute;
+      background: rgba(21, 101, 192, 0.1);
+      border-radius: 50%;
+      animation: float 15s infinite linear;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+      100% { transform: translateY(0) rotate(360deg); }
+    }
+    
+    .floating-element:nth-child(1) {
+      width: 80px;
+      height: 80px;
+      top: 10%;
+      left: 10%;
+      animation-duration: 20s;
+    }
+    
+    .floating-element:nth-child(2) {
+      width: 60px;
+      height: 60px;
+      top: 70%;
+      left: 80%;
+      animation-duration: 25s;
+    }
+    
+    .floating-element:nth-child(3) {
+      width: 100px;
+      height: 100px;
+      top: 40%;
+      left: 85%;
+      animation-duration: 30s;
+    }
+    
+    .floating-element:nth-child(4) {
+      width: 50px;
+      height: 50px;
+      top: 80%;
+      left: 15%;
+      animation-duration: 18s;
+    }
+    
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: 10px;
+      color: white;
+      font-weight: 500;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateX(150%);
+      transition: transform 0.5s ease;
+    }
+    
+    .notification.show {
+      transform: translateX(0);
+    }
+    
+    .notification.success {
+      background: linear-gradient(135deg, #4CAF50, #388E3C);
+    }
+    
+    .notification.error {
+      background: linear-gradient(135deg, #f44336, #d32f2f);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+      
+      header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+      
+      .logo-text {
+        font-size: 1.3rem;
+      }
+      
+      .appointment-actions {
+        flex-direction: column;
+      }
+      
+      .notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        transform: translateY(-150%);
+      }
+      
+      .notification.show {
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Animation -->
+  <div class="bg-animation"></div>
+  
+  <!-- Floating Elements -->
+  <div class="floating-elements">
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+  </div>
+  
+  <!-- Notification -->
+  <div class="notification" id="notification">
+    <i class="fas fa-check-circle"></i>
+    <span id="notificationText">Appointment booked successfully!</span>
+  </div>
+
+  <header>
+    <div class="logo">
+      <i class="fas fa-heartbeat"></i>
+      <span class="logo-text">MediCare+</span>
+    </div>
+    <a href="index.html" class="home-btn">
+      <i class="fas fa-house"></i> Home
+    </a>
+  </header>
+  
+  <div class="container">
+    <h2>Book an Appointment</h2>
+    <form id="appointmentForm">
+      <div class="form-group">
+        <input type="text" id="name" placeholder="Full Name" required>
+        <label for="name">Full Name</label>
+        <i class="fas fa-user input-icon"></i>
+      </div>
+      
+      <div class="form-group">
+        <input type="email" id="email" placeholder="Email Address" required>
+        <label for="email">Email Address</label>
+        <i class="fas fa-envelope input-icon"></i>
+      </div>
+      
+      <div class="form-group">
+        <input type="tel" id="phone" placeholder="Phone Number" required>
+        <label for="phone">Phone Number</label>
+        <i class="fas fa-phone input-icon"></i>
+      </div>
+      
+      <div class="form-group">
+        <select id="department" required>
+          <option value="" disabled selected>Select Department</option>
+          <option value="cardiology">Cardiology</option>
+          <option value="neurology">Neurology</option>
+          <option value="orthopedics">Orthopedics</option>
+          <option value="pediatrics">Pediatrics</option>
+          <option value="dermatology">Dermatology</option>
+          <option value="ophthalmology">Ophthalmology</option>
+          <option value="gynecology">Gynecology</option>
+          <option value="ent">ENT</option>
+          <option value="gastroenterology">Gastroenterology</option>
+          <option value="urology">Urology</option>
+          <option value="psychiatry">Psychiatry</option>
+          <option value="oncology">Oncology</option>
+          <option value="nephrology">Nephrology</option>
+          <option value="endocrinology">Endocrinology</option>
+          <option value="pulmonology">Pulmonology</option>
+          <option value="rheumatology">Rheumatology</option>
+          <option value="hematology">Hematology</option>
+          <option value="general-surgery">General Surgery</option>
+          <option value="anesthesiology">Anesthesiology</option>
+          <option value="radiology">Radiology</option>
+        </select>
+        <label for="department">Department</label>
+        <i class="fas fa-stethoscope input-icon"></i>
+      </div>
+      
+      <div class="form-group">
+        <select id="doctor" required disabled>
+          <option value="" disabled selected>Please select a department first</option>
+        </select>
+        <label for="doctor">Doctor</label>
+        <i class="fas fa-user-md input-icon"></i>
+      </div>
+      
+      <div class="form-group">
+        <input type="date" id="date" required>
+        <label for="date">Appointment Date</label>
+      </div>
+      
+      <div class="form-group">
+        <input type="time" id="time" required>
+        <label for="time">Appointment Time</label>
+      </div>
+      
+      <div class="form-group">
+        <textarea id="reason" rows="4" placeholder="What happened to you? Please describe your symptoms or reason for appointment" required></textarea>
+        <label for="reason">Reason for Appointment</label>
+      </div>
+      
+      <button type="submit">Submit Appointment</button>
+    </form>
+    
+    <div class="appointment-details" id="appointmentDetails">
+      <div class="appointment-header">
+        <h3><i class="fas fa-check-circle"></i> Appointment Confirmed</h3>
+        <div class="appointment-id">Ref: #<span id="appointmentRef"></span></div>
+      </div>
+      
+      <div class="appointment-details-grid">
+        <div class="detail-item">
+          <span class="detail-label">Patient Name:</span>
+          <span class="detail-value" id="detailName"></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Email:</span>
+          <span class="detail-value" id="detailEmail"></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Phone:</span>
+          <span class="detail-value" id="detailPhone"></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Doctor:</span>
+          <span class="detail-value" id="detailDoctor"></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Department:</span>
+          <span class="detail-value" id="detailDepartment"></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Date:</span>
+          <span class="detail-value" id="detailDate"></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Time:</span>
+          <span class="detail-value" id="detailTime"></span>
+        </div>
+        <div class="detail-item reason-item">
+          <span class="detail-label">Reason for Visit:</span>
+          <span class="reason-value" id="detailReason"></span>
+        </div>
+      </div>
+      
+      <div class="appointment-actions">
+        <button class="print-btn" id="printBtn"><i class="fas fa-print"></i> Print</button>
+        <button class="new-appointment-btn" id="newAppointmentBtn"><i class="fas fa-plus"></i> New Appointment</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize EmailJS with your public key
+    emailjs.init("Ef336SU2U2G4V6wCG"); // Replace with your actual EmailJS public key
+
+    // Notification function
+    function showNotification(message, type = 'success') {
+      const notification = document.getElementById('notification');
+      const notificationText = document.getElementById('notificationText');
+      
+      notificationText.textContent = message;
+      notification.className = `notification ${type}`;
+      notification.classList.add('show');
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 5000);
+    }
+
+    const form = document.getElementById("appointmentForm");
+    const appointmentDetails = document.getElementById("appointmentDetails");
+    const appointmentRef = document.getElementById("appointmentRef");
+    const detailName = document.getElementById("detailName");
+    const detailEmail = document.getElementById("detailEmail");
+    const detailPhone = document.getElementById("detailPhone");
+    const detailDoctor = document.getElementById("detailDoctor");
+    const detailDepartment = document.getElementById("detailDepartment");
+    const detailDate = document.getElementById("detailDate");
+    const detailTime = document.getElementById("detailTime");
+    const detailReason = document.getElementById("detailReason");
+    const printBtn = document.getElementById("printBtn");
+    const newAppointmentBtn = document.getElementById("newAppointmentBtn");
+    const departmentSelect = document.getElementById("department");
+    const doctorSelect = document.getElementById("doctor");
+
+    // Doctor to department mapping
+    const doctorDepartmentMap = {
+      // Cardiology
+      "Dr. Arjun Mehta": "cardiology",
+      "Dr. Nisha Kapoor": "cardiology",
+      
+      // Neurology
+      "Dr. Rohit Sharma": "neurology",
+      "Dr. Priya Nair": "neurology",
+      
+      // Orthopedics
+      "Dr. Vikram Singh": "orthopedics",
+      "Dr. Anjali Gupta": "orthopedics",
+      
+      // Pediatrics
+      "Dr. Sanjay Kumar": "pediatrics",
+      "Dr. Meera Joshi": "pediatrics",
+      
+      // Dermatology
+      "Dr. Ritu Verma": "dermatology",
+      "Dr. Sameer Khan": "dermatology",
+      
+      // Ophthalmology
+      "Dr. Anil Sharma": "ophthalmology",
+      "Dr. Pooja Reddy": "ophthalmology",
+      
+      // Gynecology
+      "Dr. Neeta Malhotra": "gynecology",
+      "Dr. Sunita Rao": "gynecology",
+      
+      // ENT
+      "Dr. Rajeev Khanna": "ent",
+      "Dr. Kavita Sharma": "ent",
+      
+      // Gastroenterology
+      "Dr. Amit Patel": "gastroenterology",
+      "Dr. Sneha Iyer": "gastroenterology",
+      
+      // Urology
+      "Dr. Prakash Joshi": "urology",
+      "Dr. Rohan Desai": "urology",
+      
+      // Psychiatry
+      "Dr. Ananya Sen": "psychiatry",
+      "Dr. Varun Kapoor": "psychiatry",
+      
+      // Oncology
+      "Dr. Deepak Agarwal": "oncology",
+      "Dr. Shalini Gupta": "oncology",
+      
+      // Nephrology
+      "Dr. Ramesh Iyer": "nephrology",
+      "Dr. Anita Kumar": "nephrology",
+      
+      // Endocrinology
+      "Dr. Suresh Menon": "endocrinology",
+      "Dr. Priya Nair": "endocrinology",
+      
+      // Pulmonology
+      "Dr. Ajay Malhotra": "pulmonology",
+      "Dr. Neha Sharma": "pulmonology",
+      
+      // Rheumatology
+      "Dr. Karan Singh": "rheumatology",
+      "Dr. Swati Reddy": "rheumatology",
+      
+      // Hematology
+      "Dr. Rajesh Kumar": "hematology",
+      "Dr. Anjali Mehta": "hematology",
+      
+      // General Surgery
+      "Dr. Manoj Verma": "general-surgery",
+      "Dr. Sheetal Nair": "general-surgery",
+      
+      // Anesthesiology
+      "Dr. Arun Kumar": "anesthesiology",
+      "Dr. Sunita Patel": "anesthesiology",
+      
+      // Radiology
+      "Dr. Vikas Sharma": "radiology",
+      "Dr. Nandini Rao": "radiology"
+    };
+
+    // Create reverse mapping - department to doctors
+    const departmentDoctorsMap = {};
+    for (const [doctor, department] of Object.entries(doctorDepartmentMap)) {
+      if (!departmentDoctorsMap[department]) {
+        departmentDoctorsMap[department] = [];
+      }
+      departmentDoctorsMap[department].push(doctor);
+    }
+
+    // Function to populate doctors based on selected department
+    function populateDoctors() {
+      const selectedDepartment = departmentSelect.value;
+      doctorSelect.innerHTML = '<option value="" disabled selected>Select Doctor</option>';
+      
+      if (selectedDepartment && departmentDoctorsMap[selectedDepartment]) {
+        doctorSelect.disabled = false;
+        departmentDoctorsMap[selectedDepartment].forEach(doctor => {
+          const option = document.createElement('option');
+          option.value = doctor;
+          option.textContent = doctor;
+          doctorSelect.appendChild(option);
+        });
+      } else {
+        doctorSelect.disabled = true;
+        doctorSelect.innerHTML = '<option value="" disabled selected>Please select a department first</option>';
+      }
+    }
+
+    // Event listener for department selection
+    departmentSelect.addEventListener('change', populateDoctors);
+
+    // Get doctor name and department from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const doctorName = urlParams.get('doctor');
+    const department = urlParams.get('department');
+
+    // Set doctor name and department if available
+    if (doctorName) {
+      const decodedDoctor = decodeURIComponent(doctorName);
+      document.getElementById('doctor').value = decodedDoctor;
+      
+      // Auto-select department based on doctor
+      const autoDepartment = doctorDepartmentMap[decodedDoctor];
+      if (autoDepartment) {
+        document.getElementById('department').value = autoDepartment;
+        populateDoctors();
+        document.getElementById('doctor').value = decodedDoctor;
+      }
+    }
+
+    // If department is explicitly passed in URL, use that instead
+    if (department) {
+      document.getElementById('department').value = department;
+      populateDoctors();
+    }
+
+    // Add today's date as min date for appointment
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById("date").min = today;
+
+    // Generate random appointment reference
+    function generateAppointmentRef() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let result = '';
+      for (let i = 0; i < 8; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
+    }
+
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+
+      // Capture all form values
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
+      const doctor = document.getElementById("doctor").value;
+      const department = document.getElementById("department").value;
+      const departmentText = document.getElementById("department").options[document.getElementById("department").selectedIndex].text;
+      const date = document.getElementById("date").value;
+      const time = document.getElementById("time").value;
+      const reason = document.getElementById("reason").value;
+
+      console.log("Form values captured:", { name, email, phone, doctor, department, date, time, reason });
+
+      // Create parameters object for EmailJS - using clear parameter names
+      const params = {
+        patient_name: name,
+        patient_email: email,
+        patient_phone: phone,
+        doctor_name: doctor,
+        department_name: departmentText,
+        appointment_date: new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+        appointment_time: time,
+        symptoms: reason,
+        reason_for_visit: reason,
+        appointment_ref: generateAppointmentRef(),
+        to_email: email // Send confirmation to patient's email
+      };
+
+      console.log("Sending params to EmailJS:", params);
+
+      // Show loading state
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Booking...';
+      submitBtn.disabled = true;
+
+      // Send email using EmailJS
+      emailjs.send("service_q9d7xbr", "template_mb7rvh9", params)
+        .then(function(response) {
+          console.log('Email sent successfully:', response);
+          
+          // Show appointment details
+          appointmentRef.textContent = params.appointment_ref;
+          detailName.textContent = params.patient_name;
+          detailEmail.textContent = params.patient_email;
+          detailPhone.textContent = params.patient_phone;
+          detailDoctor.textContent = params.doctor_name;
+          detailDepartment.textContent = params.department_name;
+          detailDate.textContent = params.appointment_date;
+          detailTime.textContent = params.appointment_time;
+          detailReason.textContent = params.symptoms;
+          
+          // Hide form and show appointment details
+          form.style.display = "none";
+          appointmentDetails.style.display = "block";
+          
+          // Show success notification
+          showNotification("Appointment booked successfully! Confirmation email sent.");
+          
+          // Scroll to appointment details
+          appointmentDetails.scrollIntoView({ behavior: 'smooth' });
+        }, function(error) {
+          console.error('Email failed to send:', error);
+          console.error('Error details:', error.text || error);
+          
+          // Show appointment details even if email fails
+          appointmentRef.textContent = params.appointment_ref;
+          detailName.textContent = params.patient_name;
+          detailEmail.textContent = params.patient_email;
+          detailPhone.textContent = params.patient_phone;
+          detailDoctor.textContent = params.doctor_name;
+          detailDepartment.textContent = params.department_name;
+          detailDate.textContent = params.appointment_date;
+          detailTime.textContent = params.appointment_time;
+          detailReason.textContent = params.symptoms;
+          
+          // Hide form and show appointment details
+          form.style.display = "none";
+          appointmentDetails.style.display = "block";
+          
+          // Show error notification
+          showNotification("Appointment booked but email notification failed. Please note your reference number.", "error");
+          
+          // Scroll to appointment details
+          appointmentDetails.scrollIntoView({ behavior: 'smooth' });
+        })
+        .finally(() => {
+          // Reset button state
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+        });
+    });
+        
+    // Print button functionality
+    printBtn.addEventListener("click", function() {
+      window.print();
+    });
+        
+    // New appointment button functionality
+    newAppointmentBtn.addEventListener("click", function() {
+      // Reset form
+      form.reset();
+      
+      // Reset doctor dropdown
+      populateDoctors();
+      
+      // Reset doctor name and department if they were pre-filled
+      if (doctorName) {
+        document.getElementById('doctor').value = decodeURIComponent(doctorName);
+        document.getElementById('department').value = department || '';
+        populateDoctors();
+        document.getElementById('doctor').value = decodeURIComponent(doctorName);
+      }
+      
+      // Show form and hide appointment details
+      appointmentDetails.style.display = "none";
+      form.style.display = "flex";
+      
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+        
+    // Add floating label functionality
+    document.querySelectorAll('input, textarea, select').forEach(element => {
+      element.addEventListener('focus', function() {
+        this.parentElement.classList.add('focused');
+      });
+          
+      element.addEventListener('blur', function() {
+        if (this.value === '') {
+          this.parentElement.classList.remove('focused');
+        }
+      });
+          
+      // Check if field has value on page load
+      if (element.value !== '') {
+        element.parentElement.classList.add('focused');
+      }
+    });
+  </script>
+</body>
+</html>

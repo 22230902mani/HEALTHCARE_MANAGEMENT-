@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthCare Pro - Departments</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1565c0;
+            --primary-dark: #0d47a1;
+            --secondary: #4CAF50;
+            --accent: #f47abf;
+            --light: #e3f2fd;
+            --dark: #1a237e;
+            --text: #333;
+            --card-bg: #ffffff;
+            --sidebar-bg: #f8f9fa;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            grid-template-rows: auto 1fr auto;
+            min-height: 100vh;
+        }
+
+        .home-btn {
+            background: linear-gradient(90deg, var(--secondary), #2e7d32);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+            margin-right: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .home-btn i {
+            color: white;
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Header Styles */
+        header {
+            grid-column: 1 / -1;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideDown 0.8s ease;
+        }
+
+        @keyframes slideDown {
+            0% { transform: translateY(-100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: var(--secondary);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .header-info {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background: white;
+            padding: 1.5rem 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            height: 100%;
+            border-radius: 0 20px 20px 0;
+            animation: fadeInLeft 1s ease;
+        }
+
+        @keyframes fadeInLeft {
+            0% { opacity: 0; transform: translateX(-30px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem 1.5rem;
+            color: var(--dark);
+            text-decoration: none;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(21, 101, 192, 0.1);
+            border-left: 4px solid var(--primary);
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu i {
+            width: 20px;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: white;
+            margin: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.3rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(90deg, var(--secondary), #2e7d32);
+            color: white;
+        }
+
+        /* Departments Grid */
+        .departments-container {
+            padding: 0 2rem 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .department-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            border-top: 6px solid;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .department-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .department-card:hover::before {
+            opacity: 1;
+        }
+
+        .department-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .department-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .department-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+        }
+
+        .department-card:hover .department-icon {
+            transform: scale(1.1);
+        }
+
+        .cardiology .department-icon { 
+            background: linear-gradient(135deg, #e74c3c, #c0392b); 
+        }
+        .neurology .department-icon { 
+            background: linear-gradient(135deg, #3498db, #2980b9); 
+        }
+        .orthopedics .department-icon { 
+            background: linear-gradient(135deg, #9b59b6, #8e44ad); 
+        }
+        .pediatrics .department-icon { 
+            background: linear-gradient(135deg, #2ecc71, #27ae60); 
+        }
+        .dermatology .department-icon { 
+            background: linear-gradient(135deg, #f1c40f, #f39c12); 
+        }
+        .radiology .department-icon { 
+            background: linear-gradient(135deg, #1abc9c, #16a085); 
+        }
+        .surgery .department-icon { 
+            background: linear-gradient(135deg, #e67e22, #d35400); 
+        }
+        .emergency .department-icon { 
+            background: linear-gradient(135deg, #e74c3c, #c0392b); 
+        }
+
+        .department-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .department-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .department-details {
+            padding: 1.5rem;
+        }
+
+        .department-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 0.8rem;
+            background: var(--light);
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        .stat:hover {
+            transform: translateY(-5px);
+            background: #e1f5fe;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .department-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .contact-item i {
+            color: var(--primary);
+            width: 16px;
+        }
+
+        .department-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 0.6rem;
+            border: none;
+            border-radius: 8px;
+            background: var(--light);
+            color: var(--dark);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: var(--transition);
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Footer Styles */
+        footer {
+            grid-column: 1 / -1;
+            background: var(--dark);
+            color: white;
+            padding: 1.5rem 2rem;
+            text-align: center;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: modalFadeIn 0.5s ease;
+        }
+
+        @keyframes modalFadeIn {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            background: var(--light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .departments-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .departments-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-info {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .page-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <a href="index.html" class="home-btn">
+                    <i class="fas fa-house"></i> Home
+                </a>
+                <i class="fas fa-heartbeat"></i>
+                <h1>HealthCare Pro - Departments</h1>
+            </div>
+            <div class="header-info">
+                <div class="user-profile">
+                    <div class="user-avatar">LM</div>
+                    <div>
+                        <div>Dr. Manikanta</div>
+                        <div style="font-size: 0.8rem;">Administrator</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="appointment.html"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+                <li><a href="doctor.html"><i class="fas fa-user-md"></i> Doctors</a></li>
+                <li><a href="department.html" class="active"><i class="fas fa-building"></i> Departments</a></li>
+                <li><a href="paitent.html"><i class="fas fa-procedures"></i> Patients</a></li>
+                <li><a href="payment.html"><i class="fas fa-credit-card"></i> Payments</a></li>
+                <li><a href="report.html"><i class="fas fa-chart-bar"></i> Reports</a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="help.html"><i class="fas fa-question-circle"></i> Help</a></li>
+            </ul>
+        </aside>
+
+        <!-- Page Content -->
+        <main>
+            <div class="page-header">
+                <div class="page-title">
+                    <i class="fas fa-building"></i>
+                    <h2>Hospital Departments</h2>
+                </div>
+                <div class="page-actions">
+                  <button class="btn btn-secondary" onclick="window.location.href='rooms.html'">
+    <i class="fas fa-file-export"></i> Rooms
+</button>
+
+                    <button class="btn btn-primary" id="addDepartmentBtn">
+                        <i class="fas fa-plus"></i> Add Department
+                    </button>
+                </div>
+            </div>
+
+            <div class="departments-container">
+                <!-- Cardiology Department -->
+                <div class="department-card cardiology">
+                    <div class="department-header">
+                        <div class="department-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="department-info">
+                            <h3>Cardiology</h3>
+                            <p>Heart & Vascular Care</p>
+                        </div>
+                    </div>
+                    <div class="department-details">
+                        <div class="department-stats">
+                            <div class="stat">
+                                <div class="stat-value">12</div>
+                                <div class="stat-label">Doctors</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">245</div>
+                                <div class="stat-label">Patients</div>
+                            </div>
+                        </div>
+                        <div class="department-contact">
+                            <div class="contact-item">
+                                <i class="fas fa-user-md"></i>
+                                <span>Head: Dr. Sarah Miller</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-phone"></i>
+                                <span>+1 (555) 123-4567</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Floor 3, Wing A</span>
+                            </div>
+                        </div>
+                        <div class="department-actions">
+                            <button class="action-btn">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-calendar"></i> Schedule
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Neurology Department -->
+                <div class="department-card neurology">
+                    <div class="department-header">
+                        <div class="department-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="department-info">
+                            <h3>Neurology</h3>
+                            <p>Brain & Nervous System</p>
+                        </div>
+                    </div>
+                    <div class="department-details">
+                        <div class="department-stats">
+                            <div class="stat">
+                                <div class="stat-value">8</div>
+                                <div class="stat-label">Doctors</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">187</div>
+                                <div class="stat-label">Patients</div>
+                            </div>
+                        </div>
+                        <div class="department-contact">
+                            <div class="contact-item">
+                                <i class="fas fa-user-md"></i>
+                                <span>Head: Dr. Emily Davis</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-phone"></i>
+                                <span>+1 (555) 123-4568</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Floor 4, Wing B</span>
+                            </div>
+                        </div>
+                        <div class="department-actions">
+                            <button class="action-btn">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-calendar"></i> Schedule
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orthopedics Department -->
+                <div class="department-card orthopedics">
+                    <div class="department-header">
+                        <div class="department-icon">
+                            <i class="fas fa-bone"></i>
+                        </div>
+                        <div class="department-info">
+                            <h3>Orthopedics</h3>
+                            <p>Bones & Joints Care</p>
+                        </div>
+                    </div>
+                    <div class="department-details">
+                        <div class="department-stats">
+                            <div class="stat">
+                                <div class="stat-value">10</div>
+                                <div class="stat-label">Doctors</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">312</div>
+                                <div class="stat-label">Patients</div>
+                            </div>
+                        </div>
+                        <div class="department-contact">
+                            <div class="contact-item">
+                                <i class="fas fa-user-md"></i>
+                                <span>Head: Dr. Lisa Brown</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-phone"></i>
+                                <span>+1 (555) 123-4569</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Floor 2, Wing C</span>
+                            </div>
+                        </div>
+                        <div class="department-actions">
+                            <button class="action-btn">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-calendar"></i> Schedule
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pediatrics Department -->
+                <div class="department-card pediatrics">
+                    <div class="department-header">
+                        <div class="department-icon">
+                            <i class="fas fa-baby"></i>
+                        </div>
+                        <div class="department-info">
+                            <h3>Pediatrics</h3>
+                            <p>Child Healthcare</p>
+                        </div>
+                    </div>
+                    <div class="department-details">
+                        <div class="department-stats">
+                            <div class="stat">
+                                <div class="stat-value">15</div>
+                                <div class="stat-label">Doctors</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">428</div>
+                                <div class="stat-label">Patients</div>
+                            </div>
+                        </div>
+                        <div class="department-contact">
+                            <div class="contact-item">
+                                <i class="fas fa-user-md"></i>
+                                <span>Head: Dr. James Wilson</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-phone"></i>
+                                <span>+1 (555) 123-4570</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Floor 1, Wing A</span>
+                            </div>
+                        </div>
+                        <div class="department-actions">
+                            <button class="action-btn">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-calendar"></i> Schedule
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dermatology Department -->
+                <div class="department-card dermatology">
+                    <div class="department-header">
+                        <div class="department-icon">
+                            <i class="fas fa-allergies"></i>
+                        </div>
+                        <div class="department-info">
+                            <h3>Dermatology</h3>
+                            <p>Skin & Hair Care</p>
+                        </div>
+                    </div>
+                    <div class="department-details">
+                        <div class="department-stats">
+                            <div class="stat">
+                                <div class="stat-value">6</div>
+                                <div class="stat-label">Doctors</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">173</div>
+                                <div class="stat-label">Patients</div>
+                            </div>
+                        </div>
+                        <div class="department-contact">
+                            <div class="contact-item">
+                                <i class="fas fa-user-md"></i>
+                                <span>Head: Dr. Michael Taylor</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-phone"></i>
+                                <span>+1 (555) 123-4571</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Floor 2, Wing B</span>
+                            </div>
+                        </div>
+                        <div class="department-actions">
+                            <button class="action-btn">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-calendar"></i> Schedule
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Radiology Department -->
+                <div class="department-card radiology">
+                    <div class="department-header">
+                        <div class="department-icon">
+                            <i class="fas fa-x-ray"></i>
+                        </div>
+                        <div class="department-info">
+                            <h3>Radiology</h3>
+                            <p>Imaging & Diagnostics</p>
+                        </div>
+                    </div>
+                    <div class="department-details">
+                        <div class="department-stats">
+                            <div class="stat">
+                                <div class="stat-value">9</div>
+                                <div class="stat-label">Doctors</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">521</div>
+                                <div class="stat-label">Patients</div>
+                            </div>
+                        </div>
+                        <div class="department-contact">
+                            <div class="contact-item">
+                                <i class="fas fa-user-md"></i>
+                                <span>Head: Dr. Robert Johnson</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-phone"></i>
+                                <span>+1 (555) 123-4572</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Basement, Wing A</span>
+                            </div>
+                        </div>
+                        <div class="department-actions">
+                            <button class="action-btn">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-calendar"></i> Schedule
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Surgery Department -->
+                <div class="department-card surgery">
+                    <div class="department-header">
+                        <div class="department-icon">
+                            <i class="fas fa-procedures"></i>
+                        </div>
+                        <div class="department-info">
+                            <h3>Surgery</h3>
+                            <p>Operative Procedures</p>
+                        </div>
+                    </div>
+                    <div class="department-details">
+                        <div class="department-stats">
+                            <div class="stat">
+                                <div class="stat-value">14</div>
+                                <div class="stat-label">Doctors</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">387</div>
+                                <div class="stat-label">Patients</div>
+                            </div>
+                        </div>
+                        <div class="department-contact">
+                            <div class="contact-item">
+                                <i class="fas fa-user-md"></i>
+                                <span>Head: Dr. William Clark</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-phone"></i>
+                                <span>+1 (555) 123-4573</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Floor 5, Wing A</span>
+                            </div>
+                        </div>
+                        <div class="department-actions">
+                            <button class="action-btn">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-calendar"></i> Schedule
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emergency Department -->
+                <div class="department-card emergency">
+                    <div class="department-header">
+                        <div class="department-icon">
+                            <i class="fas fa-ambulance"></i>
+                        </div>
+                        <div class="department-info">
+                            <h3>Emergency</h3>
+                            <p>24/7 Emergency Care</p>
+                        </div>
+                    </div>
+                    <div class="department-details">
+                        <div class="department-stats">
+                            <div class="stat">
+                                <div class="stat-value">18</div>
+                                <div class="stat-label">Doctors</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">642</div>
+                                <div class="stat-label">Patients</div>
+                            </div>
+                        </div>
+                        <div class="department-contact">
+                            <div class="contact-item">
+                                <i class="fas fa-user-md"></i>
+                                <span>Head: Dr. Jennifer Lee</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-phone"></i>
+                                <span>+1 (555) 123-4574</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Ground Floor, Main Wing</span>
+                            </div>
+                        </div>
+                        <div class="department-actions">
+                            <button class="action-btn">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-calendar"></i> Schedule
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2023 HealthCare Pro Management System. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Add Department Modal -->
+    <div class="modal" id="addDepartmentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Department</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="departmentForm">
+                    <div class="form-group">
+                        <label for="departmentName">Department Name</label>
+                        <input type="text" id="departmentName" class="form-control" placeholder="Enter department name">
+                    </div>
+                    <div class="form-group">
+                        <label for="departmentDescription">Description</label>
+                        <textarea id="departmentDescription" class="form-control" rows="3" placeholder="Enter department description"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="departmentHead">Department Head</label>
+                            <input type="text" id="departmentHead" class="form-control" placeholder="Enter head of department">
+                        </div>
+                        <div class="form-group">
+                            <label for="departmentPhone">Phone Number</label>
+                            <input type="text" id="departmentPhone" class="form-control" placeholder="Enter phone number">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="departmentLocation">Location</label>
+                            <input type="text" id="departmentLocation" class="form-control" placeholder="Enter department location">
+                        </div>
+                        <div class="form-group">
+                            <label for="departmentEmail">Email Address</label>
+                            <input type="email" id="departmentEmail" class="form-control" placeholder="Enter email address">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="departmentDoctors">Number of Doctors</label>
+                            <input type="number" id="departmentDoctors" class="form-control" min="1" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="departmentCapacity">Patient Capacity</label>
+                            <input type="number" id="departmentCapacity" class="form-control" min="1" value="10">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                <button class="btn btn-primary" id="saveBtn">Save Department</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal functionality
+        const addDepartmentBtn = document.getElementById('addDepartmentBtn');
+        const addDepartmentModal = document.getElementById('addDepartmentModal');
+        const closeBtn = document.querySelector('.close-btn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const saveBtn = document.getElementById('saveBtn');
+
+        // Open modal
+        addDepartmentBtn.addEventListener('click', () => {
+            addDepartmentModal.style.display = 'flex';
+        });
+
+        // Close modal
+        const closeModal = () => {
+            addDepartmentModal.style.display = 'none';
+        };
+
+        closeBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+
+        // Save department
+        saveBtn.addEventListener('click', () => {
+            // In a real application, you would save the data to a database
+            alert('Department added successfully!');
+            closeModal();
+            // Reset form
+            document.getElementById('departmentForm').reset();
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (event) => {
+            if (event.target === addDepartmentModal) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

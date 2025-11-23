@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthCare Pro - Reports & Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary: #1565c0;
+            --primary-dark: #0d47a1;
+            --secondary: #4CAF50;
+            --accent: #f47abf;
+            --light: #e3f2fd;
+            --dark: #1a237e;
+            --text: #333;
+            --card-bg: #ffffff;
+            --sidebar-bg: #f8f9fa;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --gradient-primary: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+            --gradient-secondary: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            --gradient-accent: linear-gradient(135deg, #f47abf 0%, #e91e63 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            grid-template-rows: auto 1fr auto;
+            min-height: 100vh;
+        }
+
+        .home-btn {
+            background: var(--gradient-secondary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+            margin-right: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Header Styles */
+        header {
+            grid-column: 1 / -1;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideDown 0.8s ease;
+        }
+
+        @keyframes slideDown {
+            0% { transform: translateY(-100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: var(--secondary);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .header-info {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background: white;
+            padding: 1.5rem 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            height: 100%;
+            border-radius: 0 20px 20px 0;
+            animation: fadeInLeft 1s ease;
+        }
+
+        @keyframes fadeInLeft {
+            0% { opacity: 0; transform: translateX(-30px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem 1.5rem;
+            color: var(--dark);
+            text-decoration: none;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(21, 101, 192, 0.1);
+            border-left: 4px solid var(--primary);
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu i {
+            width: 20px;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: white;
+            margin: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.3rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--gradient-secondary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--gradient-secondary);
+            color: white;
+        }
+
+        /* Page Content */
+        .page-content {
+            padding: 0 2rem 2rem;
+        }
+
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            margin-bottom: 1.5rem;
+            border-top: 6px solid;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-header h2 {
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+
+        .card-header i {
+            color: var(--secondary);
+            font-size: 1.5rem;
+        }
+
+        /* KPI Cards */
+        .kpi-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: var(--transition);
+            border-top: 6px solid;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .kpi-card:hover::before {
+            opacity: 1;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .kpi-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+            transition: var(--transition);
+        }
+
+        .kpi-card:hover .kpi-icon {
+            transform: scale(1.1);
+        }
+
+        .kpi-content {
+            flex: 1;
+        }
+
+        .kpi-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .kpi-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .kpi-change {
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+
+        .positive {
+            color: var(--secondary);
+        }
+
+        .negative {
+            color: #e74c3c;
+        }
+
+        /* Charts Layout */
+        .charts-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-container {
+            height: 300px;
+            margin-top: 1rem;
+            position: relative;
+        }
+
+        .full-width-chart {
+            grid-column: 1 / -1;
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .data-table th, .data-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table th {
+            background: var(--light);
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .data-table tr:hover {
+            background: rgba(21, 101, 192, 0.05);
+        }
+
+        /* Report Filters */
+        .report-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            padding: 0.6rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1);
+        }
+
+        /* Report Tabs */
+        .report-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 1.5rem;
+            background: white;
+            border-radius: 10px 10px 0 0;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .report-tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .report-tab.active {
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+            background: rgba(21, 101, 192, 0.05);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Footer Styles */
+        footer {
+            grid-column: 1 / -1;
+            background: var(--dark);
+            color: white;
+            padding: 1.5rem 2rem;
+            text-align: center;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .charts-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .header-info {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .page-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .kpi-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .report-filters {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .kpi-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Animation */
+        .chart-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #95a5a6;
+        }
+
+        .chart-loading i {
+            font-size: 2rem;
+            margin-right: 1rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Export Options */
+        .export-options {
+            position: relative;
+            display: inline-block;
+        }
+
+        .export-dropdown {
+            display: none;
+            position: absolute;
+            background: white;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            z-index: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            top: 100%;
+            right: 0;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .export-dropdown a {
+            color: var(--dark);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s;
+        }
+
+        .export-dropdown a:hover {
+            background-color: var(--light);
+        }
+
+        .export-options:hover .export-dropdown {
+            display: block;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Animation for cards */
+        @keyframes cardSlideIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .card, .kpi-card {
+            animation: cardSlideIn 0.5s ease;
+        }
+
+        /* Chart container improvements */
+        .chart-container canvas {
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <a href="dashboard.html" class="home-btn">
+                    <i class="fas fa-house"></i> Home
+                </a>
+                <i class="fas fa-heartbeat"></i>
+                <h1>HealthCare Pro - Reports & Analytics</h1>
+            </div>
+            <div class="header-info">
+                <div class="user-profile">
+                    <div class="user-avatar">LM</div>
+                    <div>
+                        <div>Dr. Manikanta</div>
+                        <div style="font-size: 0.8rem;">Administrator</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="appointment.html"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+                <li><a href="doctor.html"><i class="fas fa-user-md"></i> Doctors</a></li>
+                <li><a href="department.html"><i class="fas fa-building"></i> Departments</a></li>
+                <li><a href="paitent.html"><i class="fas fa-procedures"></i> Patients</a></li>
+                <li><a href="payment.html"><i class="fas fa-credit-card"></i> Payments</a></li>
+                <li><a href="report.html" class="active"><i class="fas fa-chart-bar"></i> Reports</a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="help.html"><i class="fas fa-question-circle"></i> Help</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main>
+            <div class="page-header">
+                <div class="page-title">
+                    <i class="fas fa-chart-bar"></i>
+                    <h2>Reports & Analytics</h2>
+                </div>
+                <div class="page-actions">
+                    <div class="export-options">
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-download"></i> Export
+                            <i class="fas fa-caret-down" style="margin-left: 5px;"></i>
+                        </button>
+                        <div class="export-dropdown">
+                            <a href="#" id="exportPDF"><i class="fas fa-file-pdf"></i> Export as PDF</a>
+                            <a href="#" id="exportExcel"><i class="fas fa-file-excel"></i> Export as Excel</a>
+                            <a href="#" id="exportPNG"><i class="fas fa-file-image"></i> Export Charts</a>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="refreshReports">
+                        <i class="fas fa-sync"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <div class="page-content">
+                <!-- Report Filters -->
+                <div class="report-filters">
+                    <div class="filter-group">
+                        <label for="reportPeriod">Report Period</label>
+                        <select id="reportPeriod" class="form-control">
+                            <option value="7days">Last 7 Days</option>
+                            <option value="30days" selected>Last 30 Days</option>
+                            <option value="3months">Last 3 Months</option>
+                            <option value="6months">Last 6 Months</option>
+                            <option value="1year">Last Year</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    <div class="filter-group" id="customDateRange" style="display: none;">
+                        <label for="startDate">Start Date</label>
+                        <input type="date" id="startDate" class="form-control">
+                    </div>
+                    <div class="filter-group" id="customDateRangeEnd" style="display: none;">
+                        <label for="endDate">End Date</label>
+                        <input type="date" id="endDate" class="form-control">
+                    </div>
+                    <div class="filter-group">
+                        <label for="reportType">Report Type</label>
+                        <select id="reportType" class="form-control">
+                            <option value="financial">Financial Reports</option>
+                            <option value="patient">Patient Reports</option>
+                            <option value="appointment">Appointment Reports</option>
+                            <option value="department">Department Reports</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="departmentFilter">Department</label>
+                        <select id="departmentFilter" class="form-control">
+                            <option value="all">All Departments</option>
+                            <option value="cardiology">Cardiology</option>
+                            <option value="neurology">Neurology</option>
+                            <option value="orthopedics">Orthopedics</option>
+                            <option value="pediatrics">Pediatrics</option>
+                        </select>
+                    </div>
+                    <div class="filter-group" style="align-self: flex-end;">
+                        <button class="btn btn-primary" id="applyFilters">
+                            <i class="fas fa-filter"></i> Apply Filters
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Report Tabs -->
+                <div class="report-tabs">
+                    <div class="report-tab active" data-tab="overview">Overview</div>
+                    <div class="report-tab" data-tab="financial">Financial</div>
+                    <div class="report-tab" data-tab="patients">Patients</div>
+                    <div class="report-tab" data-tab="appointments">Appointments</div>
+                    <div class="report-tab" data-tab="performance">Performance</div>
+                </div>
+
+                <!-- Overview Tab -->
+                <div class="tab-content active" id="overview-tab">
+                    <!-- KPI Cards -->
+                    <div class="kpi-container">
+                        <div class="kpi-card">
+                            <div class="kpi-icon">
+                                <i class="fas fa-rupee-sign"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <div class="kpi-value">₹2,48,560</div>
+                                <div class="kpi-label">Total Revenue</div>
+                                <div class="kpi-change positive">
+                                    <i class="fas fa-arrow-up"></i> 8.5% from last month
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-icon">
+                                <i class="fas fa-procedures"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <div class="kpi-value">1,248</div>
+                                <div class="kpi-label">Total Patients</div>
+                                <div class="kpi-change positive">
+                                    <i class="fas fa-arrow-up"></i> 12% from last month
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <div class="kpi-value">842</div>
+                                <div class="kpi-label">Appointments</div>
+                                <div class="kpi-change negative">
+                                    <i class="fas fa-arrow-down"></i> 5% from last month
+                                </div>
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-icon">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <div class="kpi-content">
+                                <div class="kpi-value">48</div>
+                                <div class="kpi-label">Medical Staff</div>
+                                <div class="kpi-change positive">
+                                    <i class="fas fa-arrow-up"></i> 3 new hires
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Row 1 -->
+                    <div class="charts-row">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2><i class="fas fa-chart-line"></i> Revenue Trend</h2>
+                                <div>
+                                    <select class="form-control" id="revenueChartType">
+                                        <option value="line">Line Chart</option>
+                                        <option value="bar">Bar Chart</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h2><i class="fas fa-procedures"></i> Patient Admissions</h2>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="admissionsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Row 2 -->
+                    <div class="charts-row">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2><i class="fas fa-chart-pie"></i> Department Revenue</h2>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="departmentRevenueChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h2><i class="fas fa-stethoscope"></i> Appointment Types</h2>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="appointmentTypesChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Full Width Chart -->
+                    <div class="card full-width-chart">
+                        <div class="card-header">
+                            <h2><i class="fas fa-chart-bar"></i> Monthly Performance</h2>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial Tab -->
+                <div class="tab-content" id="financial-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-money-bill-wave"></i> Financial Summary</h2>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Month</th>
+                                        <th>Revenue</th>
+                                        <th>Expenses</th>
+                                        <th>Profit</th>
+                                        <th>Growth</th>
+                                        <th>Collection Rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>October 2023</td>
+                                        <td>₹2,48,560</td>
+                                        <td>₹1,85,420</td>
+                                        <td>₹63,140</td>
+                                        <td><span class="positive">+8.5%</span></td>
+                                        <td>84%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>September 2023</td>
+                                        <td>₹2,29,120</td>
+                                        <td>₹1,78,950</td>
+                                        <td>₹50,170</td>
+                                        <td><span class="positive">+5.2%</span></td>
+                                        <td>82%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>August 2023</td>
+                                        <td>₹2,17,850</td>
+                                        <td>₹1,72,340</td>
+                                        <td>₹45,510</td>
+                                        <td><span class="positive">+3.8%</span></td>
+                                        <td>79%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>July 2023</td>
+                                        <td>₹2,09,780</td>
+                                        <td>₹1,68,920</td>
+                                        <td>₹40,860</td>
+                                        <td><span class="positive">+2.1%</span></td>
+                                        <td>76%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>June 2023</td>
+                                        <td>₹2,05,450</td>
+                                        <td>₹1,65,380</td>
+                                        <td>₹40,070</td>
+                                        <td><span class="negative">-1.5%</span></td>
+                                        <td>75%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="charts-row">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2><i class="fas fa-chart-area"></i> Revenue vs Expenses</h2>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="revenueExpensesChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h2><i class="fas fa-percentage"></i> Collection Rate Trend</h2>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="collectionRateChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Patients Tab -->
+                <div class="tab-content" id="patients-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-user-injured"></i> Patient Statistics</h2>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Department</th>
+                                        <th>Total Patients</th>
+                                        <th>New Patients</th>
+                                        <th>Returning Patients</th>
+                                        <th>Avg. Stay (days)</th>
+                                        <th>Patient Satisfaction</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Cardiology</td>
+                                        <td>245</td>
+                                        <td>42</td>
+                                        <td>203</td>
+                                        <td>4.2</td>
+                                        <td>94%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Neurology</td>
+                                        <td>187</td>
+                                        <td>35</td>
+                                        <td>152</td>
+                                        <td>5.7</td>
+                                        <td>89%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Orthopedics</td>
+                                        <td>312</td>
+                                        <td>68</td>
+                                        <td>244</td>
+                                        <td>3.8</td>
+                                        <td>96%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pediatrics</td>
+                                        <td>428</td>
+                                        <td>125</td>
+                                        <td>303</td>
+                                        <td>2.5</td>
+                                        <td>98%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Dermatology</td>
+                                        <td>173</td>
+                                        <td>47</td>
+                                        <td>126</td>
+                                        <td>1.2</td>
+                                        <td>92%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="charts-row">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2><i class="fas fa-chart-bar"></i> Patient Demographics</h2>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="patientDemographicsChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h2><i class="fas fa-map-marker-alt"></i> Patient Locations</h2>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="patientLocationsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appointments Tab -->
+                <div class="tab-content" id="appointments-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-calendar-alt"></i> Appointment Statistics</h2>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Department</th>
+                                        <th>Total Appointments</th>
+                                        <th>Scheduled</th>
+                                        <th>Completed</th>
+                                        <th>Cancelled</th>
+                                        <th>No-Show Rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Cardiology</td>
+                                        <td>186</td>
+                                        <td>24</td>
+                                        <td>152</td>
+                                        <td>10</td>
+                                        <td>5.4%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Neurology</td>
+                                        <td>142</td>
+                                        <td>18</td>
+                                        <td>118</td>
+                                        <td>6</td>
+                                        <td>4.2%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Orthopedics</td>
+                                        <td>228</td>
+                                        <td>35</td>
+                                        <td>184</td>
+                                        <td>9</td>
+                                        <td>3.9%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pediatrics</td>
+                                        <td>315</td>
+                                        <td>42</td>
+                                        <td>264</td>
+                                        <td>9</td>
+                                        <td>2.9%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Dermatology</td>
+                                        <td>129</td>
+                                        <td>22</td>
+                                        <td>102</td>
+                                        <td>5</td>
+                                        <td>3.9%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="charts-row">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2><i class="fas fa-chart-line"></i> Appointment Trends</h2>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="appointmentTrendsChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h2><i class="fas fa-clock"></i> Wait Time Analysis</h2>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="waitTimeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Tab -->
+                <div class="tab-content" id="performance-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-tachometer-alt"></i> Department Performance</h2>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Department</th>
+                                        <th>Revenue</th>
+                                        <th>Patients</th>
+                                        <th>Success Rate</th>
+                                        <th>Patient Satisfaction</th>
+                                        <th>Efficiency Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Cardiology</td>
+                                        <td>₹65,42,000</td>
+                                        <td>245</td>
+                                        <td>94%</td>
+                                        <td>94%</td>
+                                        <td>92</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Neurology</td>
+                                        <td>₹52,18,500</td>
+                                        <td>187</td>
+                                        <td>89%</td>
+                                        <td>89%</td>
+                                        <td>85</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Orthopedics</td>
+                                        <td>₹78,95,000</td>
+                                        <td>312</td>
+                                        <td>96%</td>
+                                        <td>96%</td>
+                                        <td>94</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pediatrics</td>
+                                        <td>₹45,32,000</td>
+                                        <td>428</td>
+                                        <td>98%</td>
+                                        <td>98%</td>
+                                        <td>96</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Dermatology</td>
+                                        <td>₹28,50,000</td>
+                                        <td>173</td>
+                                        <td>92%</td>
+                                        <td>92%</td>
+                                        <td>88</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="charts-row">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2><i class="fas fa-chart-bar"></i> Doctor Performance</h2>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="doctorPerformanceChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h2><i class="fas fa-chart-pie"></i> Resource Utilization</h2>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="resourceUtilizationChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2023 HealthCare Pro Management System. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize all charts
+            initializeCharts();
+            
+            // Set up tab functionality
+            setupTabs();
+            
+            // Set up filter functionality
+            setupFilters();
+            
+            // Set up export functionality
+            setupExport();
+        });
+
+        // Initialize Charts
+        function initializeCharts() {
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            window.revenueChart = new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                    datasets: [{
+                        label: 'Revenue (₹)',
+                        data: [185000, 195000, 210000, 198000, 220000, 235000, 240000, 230000, 245000, 248560],
+                        borderColor: '#1565c0',
+                        backgroundColor: 'rgba(21, 101, 192, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function (value) {
+                                    return '₹' + (value/1000).toFixed(0) + 'K';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Admissions Chart
+            const admissionsCtx = document.getElementById('admissionsChart').getContext('2d');
+            window.admissionsChart = new Chart(admissionsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                    datasets: [{
+                        label: 'Patient Admissions',
+                        data: [120, 135, 142, 138, 156, 168, 175, 172, 185, 192],
+                        backgroundColor: 'rgba(76, 175, 80, 0.7)',
+                        borderColor: '#4CAF50',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Department Revenue Chart
+            const deptRevenueCtx = document.getElementById('departmentRevenueChart').getContext('2d');
+            window.departmentRevenueChart = new Chart(deptRevenueCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Cardiology', 'Neurology', 'Orthopedics', 'Pediatrics', 'Dermatology', 'Others'],
+                    datasets: [{
+                        data: [28, 22, 35, 20, 12, 8],
+                        backgroundColor: [
+                            'rgba(21, 101, 192, 0.8)',
+                            'rgba(76, 175, 80, 0.8)',
+                            'rgba(244, 122, 191, 0.8)',
+                            'rgba(46, 204, 113, 0.8)',
+                            'rgba(243, 156, 18, 0.8)',
+                            'rgba(149, 165, 166, 0.8)'
+                        ],
+                        borderColor: 'white',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Appointment Types Chart
+            const appointmentTypesCtx = document.getElementById('appointmentTypesChart').getContext('2d');
+            window.appointmentTypesChart = new Chart(appointmentTypesCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Consultation', 'Follow-up', 'Emergency', 'Surgery', 'Tests'],
+                    datasets: [{
+                        data: [45, 25, 10, 15, 5],
+                        backgroundColor: [
+                            'rgba(21, 101, 192, 0.8)',
+                            'rgba(76, 175, 80, 0.8)',
+                            'rgba(231, 76, 60, 0.8)',
+                            'rgba(243, 156, 18, 0.8)',
+                            'rgba(149, 165, 166, 0.8)'
+                        ],
+                        borderColor: 'white',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Performance Chart
+            const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+            window.performanceChart = new Chart(performanceCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Cardiology', 'Neurology', 'Orthopedics', 'Pediatrics', 'Dermatology'],
+                    datasets: [
+                        {
+                            label: 'Revenue (₹ Lakhs)',
+                            data: [65.4, 52.2, 78.9, 45.3, 28.5],
+                            backgroundColor: 'rgba(21, 101, 192, 0.7)',
+                            borderColor: '#1565c0',
+                            borderWidth: 2,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Patient Satisfaction (%)',
+                            data: [94, 89, 96, 98, 92],
+                            backgroundColor: 'rgba(76, 175, 80, 0.7)',
+                            borderColor: '#4CAF50',
+                            borderWidth: 2,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Revenue (₹ Lakhs)'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Satisfaction (%)'
+                            },
+                            grid: {
+                                drawOnChartArea: false
+                            },
+                            min: 80,
+                            max: 100
+                        }
+                    }
+                }
+            });
+
+            // Revenue vs Expenses Chart
+            const revenueExpensesCtx = document.getElementById('revenueExpensesChart').getContext('2d');
+            window.revenueExpensesChart = new Chart(revenueExpensesCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                    datasets: [
+                        {
+                            label: 'Revenue',
+                            data: [185, 195, 210, 198, 220, 235, 240, 230, 245, 248.5],
+                            borderColor: '#1565c0',
+                            backgroundColor: 'rgba(21, 101, 192, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Expenses',
+                            data: [165, 172, 185, 178, 192, 205, 210, 205, 218, 222],
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Amount (₹ in Thousands)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Collection Rate Chart
+            const collectionRateCtx = document.getElementById('collectionRateChart').getContext('2d');
+            window.collectionRateChart = new Chart(collectionRateCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                    datasets: [{
+                        label: 'Collection Rate (%)',
+                        data: [72, 75, 76, 78, 79, 75, 76, 79, 82, 84],
+                        borderColor: '#4CAF50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            min: 70,
+                            max: 90,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Patient Demographics Chart
+            const patientDemographicsCtx = document.getElementById('patientDemographicsChart').getContext('2d');
+            window.patientDemographicsChart = new Chart(patientDemographicsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['0-18', '19-35', '36-50', '51-65', '65+'],
+                    datasets: [
+                        {
+                            label: 'Male',
+                            data: [85, 120, 95, 70, 45],
+                            backgroundColor: 'rgba(21, 101, 192, 0.7)'
+                        },
+                        {
+                            label: 'Female',
+                            data: [80, 135, 110, 85, 55],
+                            backgroundColor: 'rgba(244, 122, 191, 0.7)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Patient Locations Chart
+            const patientLocationsCtx = document.getElementById('patientLocationsChart').getContext('2d');
+            window.patientLocationsChart = new Chart(patientLocationsCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Local', 'Regional', 'National', 'International'],
+                    datasets: [{
+                        data: [65, 25, 8, 2],
+                        backgroundColor: [
+                            'rgba(21, 101, 192, 0.8)',
+                            'rgba(76, 175, 80, 0.8)',
+                            'rgba(244, 122, 191, 0.8)',
+                            'rgba(243, 156, 18, 0.8)'
+                        ],
+                        borderColor: 'white',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Appointment Trends Chart
+            const appointmentTrendsCtx = document.getElementById('appointmentTrendsChart').getContext('2d');
+            window.appointmentTrendsChart = new Chart(appointmentTrendsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                    datasets: [
+                        {
+                            label: 'Scheduled',
+                            data: [165, 175, 185, 172, 195, 205, 210, 215, 225, 235],
+                            borderColor: '#1565c0',
+                            backgroundColor: 'rgba(21, 101, 192, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Completed',
+                            data: [152, 162, 172, 158, 182, 192, 198, 202, 212, 222],
+                            borderColor: '#4CAF50',
+                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Wait Time Chart
+            const waitTimeCtx = document.getElementById('waitTimeChart').getContext('2d');
+            window.waitTimeChart = new Chart(waitTimeCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Cardiology', 'Neurology', 'Orthopedics', 'Pediatrics', 'Dermatology'],
+                    datasets: [{
+                        label: 'Average Wait Time (minutes)',
+                        data: [25, 32, 18, 15, 22],
+                        backgroundColor: 'rgba(243, 156, 18, 0.7)',
+                        borderColor: '#f39c12',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Doctor Performance Chart
+            const doctorPerformanceCtx = document.getElementById('doctorPerformanceChart').getContext('2d');
+            window.doctorPerformanceChart = new Chart(doctorPerformanceCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Dr. Sarah Miller', 'Dr. James Wilson', 'Dr. Lisa Brown', 'Dr. Michael Taylor', 'Dr. Emily Davis'],
+                    datasets: [
+                        {
+                            label: 'Patients Treated',
+                            data: [145, 128, 162, 118, 135],
+                            backgroundColor: 'rgba(21, 101, 192, 0.7)'
+                        },
+                        {
+                            label: 'Patient Satisfaction (%)',
+                            data: [96, 92, 94, 89, 91],
+                            backgroundColor: 'rgba(76, 175, 80, 0.7)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Resource Utilization Chart
+            const resourceUtilizationCtx = document.getElementById('resourceUtilizationChart').getContext('2d');
+            window.resourceUtilizationChart = new Chart(resourceUtilizationCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Operating Rooms', 'ICU Beds', 'General Beds', 'Equipment', 'Staff'],
+                    datasets: [{
+                        data: [75, 82, 68, 60, 88],
+                        backgroundColor: [
+                            'rgba(21, 101, 192, 0.8)',
+                            'rgba(231, 76, 60, 0.8)',
+                            'rgba(76, 175, 80, 0.8)',
+                            'rgba(243, 156, 18, 0.8)',
+                            'rgba(244, 122, 191, 0.8)'
+                        ],
+                        borderColor: 'white',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Setup Tabs
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.report-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show target tab content
+                    tabContents.forEach(content => {
+                        if (content.id === `${targetTab}-tab`) {
+                            content.classList.add('active');
+                        } else {
+                            content.classList.remove('active');
+                        }
+                    });
+                });
+            });
+        }
+
+        // Setup Filters
+        function setupFilters() {
+            const reportPeriod = document.getElementById('reportPeriod');
+            const customDateRange = document.getElementById('customDateRange');
+            const customDateRangeEnd = document.getElementById('customDateRangeEnd');
+            const applyFiltersBtn = document.getElementById('applyFilters');
+            const revenueChartType = document.getElementById('revenueChartType');
+            
+            // Show/hide custom date range
+            reportPeriod.addEventListener('change', function() {
+                if (this.value === 'custom') {
+                    customDateRange.style.display = 'flex';
+                    customDateRangeEnd.style.display = 'flex';
+                } else {
+                    customDateRange.style.display = 'none';
+                    customDateRangeEnd.style.display = 'none';
+                }
+            });
+            
+            // Apply filters
+            applyFiltersBtn.addEventListener('click', function() {
+                // In a real application, this would fetch new data based on filters
+                // For now, we'll just show a loading effect and then refresh the charts
+                
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Applying...';
+                
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-filter"></i> Apply Filters';
+                    alert('Filters applied successfully!');
+                    // In a real app, we would update the charts with filtered data here
+                }, 1500);
+            });
+            
+            // Change chart type
+            revenueChartType.addEventListener('change', function() {
+                if (window.revenueChart) {
+                    window.revenueChart.destroy();
+                }
+                
+                const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+                const type = this.value;
+                
+                window.revenueChart = new Chart(revenueCtx, {
+                    type: type,
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                        datasets: [{
+                            label: 'Revenue (₹)',
+                            data: [185000, 195000, 210000, 198000, 220000, 235000, 240000, 230000, 245000, 248560],
+                            borderColor: '#1565c0',
+                            backgroundColor: type === 'bar' ? 'rgba(21, 101, 192, 0.7)' : 'rgba(21, 101, 192, 0.1)',
+                            borderWidth: 2,
+                            fill: type === 'line'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                ticks: {
+                                    callback: function (value) {
+                                        return '₹' + (value/1000).toFixed(0) + 'K';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+            
+            // Refresh reports
+            document.getElementById('refreshReports').addEventListener('click', function() {
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+                
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-sync"></i> Refresh';
+                    alert('Reports refreshed successfully!');
+                    // In a real app, we would reload all data here
+                }, 2000);
+            });
+        }
+
+        // Setup Export
+        function setupExport() {
+            // Export as PDF
+            document.getElementById('exportPDF').addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Exporting as PDF... This would generate a PDF report in a real application.');
+                // In a real app, we would use jsPDF to generate a PDF
+            });
+            
+            // Export as Excel
+            document.getElementById('exportExcel').addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Exporting as Excel... This would generate an Excel file in a real application.');
+                // In a real app, we would generate an Excel file
+            });
+            
+            // Export Charts as PNG
+            document.getElementById('exportPNG').addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Exporting charts as PNG... This would save charts as images in a real application.');
+                // In a real app, we would use html2canvas to export charts
+            });
+        }
+    </script>
+</body>
+</html>

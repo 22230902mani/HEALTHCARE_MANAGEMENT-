@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Doctors | Healthcare Management System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #003366;
+      --secondary: #005b96;
+      --accent: #4CAF50;
+      --light: #e3f2fd;
+      --white: #ffffff;
+      --shadow: rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #e3f2fd 0%, #f9fbff 100%);
+      color: #333;
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+    }
+    
+    /* Background Animation */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+    
+    .bg-animation::before {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(0, 91, 150, 0.05) 0%, rgba(0, 51, 102, 0.05) 100%);
+      animation: rotate 30s linear infinite;
+    }
+    
+    @keyframes rotate {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+    
+    header {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: white;
+      text-align: center;
+      padding: 25px 20px;
+      font-size: 28px;
+      letter-spacing: 1px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      animation: slideDown 0.8s ease;
+    }
+    
+    @keyframes slideDown {
+      0% { transform: translateY(-100%); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    
+    .search-container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+      animation: fadeIn 1s ease;
+    }
+    
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+    
+    .search-bar input {
+      padding: 14px 20px;
+      width: 70%;
+      max-width: 500px;
+      border-radius: 50px;
+      border: 2px solid #ddd;
+      outline: none;
+      font-size: 16px;
+      transition: var(--transition);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .search-bar input:focus {
+      border-color: var(--secondary);
+      box-shadow: 0 0 15px rgba(0, 91, 150, 0.3);
+    }
+    
+    .filter-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+    
+    .filter-btn {
+      padding: 10px 20px;
+      background: white;
+      border: 2px solid var(--secondary);
+      border-radius: 50px;
+      color: var(--secondary);
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    .filter-btn:hover {
+      background: var(--secondary);
+      color: white;
+      transform: translateY(-3px);
+    }
+    
+    .filter-btn.active {
+      background: var(--secondary);
+      color: white;
+    }
+    
+    .department {
+      margin: 50px auto;
+      padding: 25px;
+      max-width: 1200px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 20px;
+box-shadow: 15px 15px 35px rgba(57, 49, 86, 0.35),
+            -15px -15px 35px rgba(57, 49, 86, 0.25);
+      backdrop-filter: blur(10px);
+      animation: fadeInUp 0.8s ease;
+    }
+    
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    .department h2 {
+      color: var(--primary);
+      border-left: 5px solid var(--secondary);
+      padding-left: 15px;
+      font-size: 26px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .department h2 i {
+      color: var(--secondary);
+    }
+    
+    .doctor-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+    
+    .doctor-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      transition: var(--transition);
+      position: relative;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+    
+    .doctor-card:hover {
+      transform: translateY(-12px) rotateX(5deg);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .doctor-img {
+      width: 100%;
+      height: 240px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .doctor-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+    
+    .doctor-card:hover .doctor-img img {
+      transform: scale(1.1);
+    }
+    
+    .doctor-info {
+      padding: 20px;
+    }
+    
+    .doctor-info h3 {
+      color: var(--primary);
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+    
+    .doctor-info p {
+      margin: 6px 0;
+      font-size: 15px;
+      display: flex;
+      align-items: flex-start;
+    }
+    
+    .doctor-info i {
+      margin-right: 10px;
+      color: var(--secondary);
+      width: 20px;
+    }
+    
+    .medal {
+      color: #f4b400;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+    
+    .book-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 15px;
+      text-align: center;
+    }
+    
+    .book-btn:hover {
+      background: #3d8b40;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+    }
+    
+    .floating-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      background: var(--secondary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 6px 20px rgba(0, 91, 150, 0.4);
+      cursor: pointer;
+      z-index: 100;
+      transition: var(--transition);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(0, 91, 150, 0.7); }
+      70% { box-shadow: 0 0 0 15px rgba(0, 91, 150, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(0, 91, 150, 0); }
+    }
+    
+    .floating-btn:hover {
+      background: var(--primary);
+      transform: scale(1.1);
+    }
+    
+    .no-results {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+      font-size: 18px;
+      display: none;
+    }
+    
+    .no-results i {
+      font-size: 50px;
+      margin-bottom: 20px;
+      color: #ccc;
+    }
+    
+    .stats-bar {
+      display: flex;
+      justify-content: space-around;
+      max-width: 1200px;
+      margin: 0 auto 40px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      backdrop-filter: blur(10px);
+    }
+    
+    .stat {
+      text-align: center;
+    }
+    
+    .stat-number {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .stat-label {
+      font-size: 14px;
+      color: #666;
+    }
+    
+    footer {
+      background: var(--primary);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 50px;
+    }
+    
+    @media (max-width: 768px) {
+      header {
+        font-size: 22px;
+        padding: 20px 15px;
+      }
+      
+      .search-bar {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .search-bar input {
+        width: 90%;
+      }
+      
+      .department {
+        padding: 15px;
+        margin: 30px 15px;
+      }
+      
+      .doctor-list {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-bar {
+        flex-direction: column;
+        gap: 15px;
+      }
+    }
+    
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: #52ff63;
+        }
+        .text{
+            font-weight: 600;
+            font-size: 2rem;
+            color: yellow;
+        }
+
+  </style>
+</head>
+<body>
+     
+  <!-- Background Animation -->
+  <div class="bg-animation"></div>
+
+  <header>
+    <div class="logo">
+    <a href="index.html" class="home-btn">
+            <i class="fas fa-house"></i> <b class="text">Home</b>
+        </a>
+        <i class="fas fa-heartbeat"></i>
+        </div>
+    <i class="fas fa-user-md"></i> Our Medical Team
+  </header>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-number">20+</div>
+      <div class="stat-label">Departments</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">40+</div>
+      <div class="stat-label">Doctors</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">15+</div>
+      <div class="stat-label">Years Experience</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">24/7</div>
+      <div class="stat-label">Emergency Care</div>
+    </div>
+  </div>
+
+  <div class="search-container">
+    <div class="search-bar">
+      <input type="text" id="search" placeholder="Search by doctor name, department, or specialty...">
+      <button class="filter-btn" id="reset-btn">Reset</button>
+    </div>
+    
+    <div class="filter-buttons" id="department-filters">
+      <!-- Department filters will be added by JavaScript -->
+    </div>
+  </div>
+
+  <div id="doctorContainer">
+    <!-- Departments will be added by JavaScript -->
+  </div>
+
+  <div class="no-results" id="no-results">
+    <i class="fas fa-search"></i>
+    <h3>No doctors found</h3>
+    <p>Try adjusting your search or filter to find what you're looking for.</p>
+  </div>
+
+  <div class="floating-btn" id="scroll-top">
+    <i class="fas fa-arrow-up"></i>
+  </div>
+
+  <footer>
+    <p>Healthcare Management System &copy; 2023 | Providing Quality Care Since 2005</p>
+  </footer>
+
+  <script>
+    // Doctor data - 20 departments with 2 doctors each
+    const departments = [
+      {
+        name: "Cardiology",
+        icon: "fas fa-heartbeat",
+        doctors: [
+          {
+            name: "Dr. Arjun Mehta",
+            image: "cardiology1.jpg",
+            degree: "MBBS, MD (Cardiology)",
+            experience: "12 Years",
+            contact: "+91 9876543210",
+            availability: "Mon–Fri, 9 AM – 4 PM",
+            award: "National Heart Specialist Award"
+          },
+          {
+            name: "Dr. Nisha Kapoor",
+            image: "cardiology2.jpg",
+            degree: "MBBS, DM (Cardiology)",
+            experience: "9 Years",
+            contact: "+91 9876543222",
+            availability: "Mon, Wed, Fri – 10 AM – 2 PM",
+            award: null
+          }
+        ]
+      },
+      {
+        name: "Neurology",
+        icon: "fas fa-brain",
+        doctors: [
+          {
+            name: "Dr. Rohit Sharma",
+            image: "neurology1.jpg",
+            degree: "MBBS, DM (Neurology)",
+            experience: "11 Years",
+            contact: "+91 9832104567",
+            availability: "Tue–Sat, 10 AM – 5 PM",
+            award: null
+          },
+          {
+            name: "Dr. Priya Nair",
+            image: "neurology2.jpg",
+            degree: "MBBS, MD (Neuro Medicine)",
+            experience: "8 Years",
+            contact: "+91 9821345678",
+            availability: "Mon–Thu, 9 AM – 3 PM",
+            award: "Brain Research Excellence Award"
+          }
+        ]
+      },
+      {
+        name: "Orthopedics",
+        icon: "fas fa-bone",
+        doctors: [
+          {
+            name: "Dr. Vikram Singh",
+            image: "orthopedics1.jpg",
+            degree: "MBBS, MS (Orthopedics)",
+            experience: "15 Years",
+            contact: "+91 9876543233",
+            availability: "Mon–Sat, 8 AM – 6 PM",
+            award: "Joint Replacement Specialist Award"
+          },
+          {
+            name: "Dr. Anjali Gupta",
+            image: "orthopedics2.jpg",
+            degree: "MBBS, DNB (Orthopedics)",
+            experience: "10 Years",
+            contact: "+91 9876543244",
+            availability: "Tue–Fri, 9 AM – 5 PM",
+            award: null
+          }
+        ]
+      },
+      {
+        name: "Pediatrics",
+        icon: "fas fa-baby",
+        doctors: [
+          {
+            name: "Dr. Sanjay Kumar",
+            image: "pediatrics1.jpg",
+            degree: "MBBS, MD (Pediatrics)",
+            experience: "14 Years",
+            contact: "+91 9876543255",
+            availability: "Mon–Fri, 10 AM – 4 PM",
+            award: null
+          },
+          {
+            name: "Dr. Meera Joshi",
+            image: "pediatrics2.jpg",
+            degree: "MBBS, DCH",
+            experience: "8 Years",
+            contact: "+91 9876543266",
+            availability: "Mon–Sat, 9 AM – 3 PM",
+            award: "Pediatric Excellence Award"
+          }
+        ]
+      },
+      {
+        name: "Dermatology",
+        icon: "fas fa-allergies",
+        doctors: [
+          {
+            name: "Dr. Ritu Verma",
+            image: "dermatology1.jpg",
+            degree: "MBBS, MD (Dermatology)",
+            experience: "12 Years",
+            contact: "+91 9876543277",
+            availability: "Mon–Fri, 9 AM – 5 PM",
+            award: "Skin Care Excellence Award"
+          },
+          {
+            name: "Dr. Sameer Khan",
+            image: "dermatology2.jpg",
+            degree: "MBBS, DVD",
+            experience: "7 Years",
+            contact: "+91 9876543288",
+            availability: "Tue–Sat, 10 AM – 6 PM",
+            award: null
+          }
+        ]
+      },
+      {
+        name: "Ophthalmology",
+        icon: "fas fa-eye",
+        doctors: [
+          {
+            name: "Dr. Anil Sharma",
+            image: "ophthalmology1.jpg",
+            degree: "MBBS, MS (Ophthalmology)",
+            experience: "18 Years",
+            contact: "+91 9876543299",
+            availability: "Mon–Sat, 8 AM – 4 PM",
+            award: null
+          },
+          {
+            name: "Dr. Pooja Reddy",
+            image: "ophthalmology2.jpg",
+            degree: "MBBS, DOMS",
+            experience: "9 Years",
+            contact: "+91 9876543300",
+            availability: "Mon–Fri, 9 AM – 5 PM",
+            award: "Eye Care Specialist Award"
+          }
+        ]
+      },
+      {
+        name: "Gynecology",
+        icon: "fas fa-female",
+        doctors: [
+          {
+            name: "Dr. Neeta Malhotra",
+            image: "gynecology1.jpg",
+            degree: "MBBS, MS (Obstetrics & Gynecology)",
+            experience: "16 Years",
+            contact: "+91 9876543311",
+            availability: "Mon–Sat, 9 AM – 5 PM",
+            award: "Women's Health Excellence Award"
+          },
+          {
+            name: "Dr. Sunita Rao",
+            image: "gynecology2.jpg",
+            degree: "MBBS, DGO",
+            experience: "11 Years",
+            contact: "+91 9876543322",
+            availability: "Mon–Fri, 10 AM – 4 PM",
+            award: null
+          }
+        ]
+      },
+      {
+        name: "ENT",
+        icon: "fas fa-ear",
+        doctors: [
+          {
+            name: "Dr. Rajeev Khanna",
+            image: "ent1.jpg",
+            degree: "MBBS, MS (ENT)",
+            experience: "13 Years",
+            contact: "+91 9876543333",
+            availability: "Mon–Sat, 9 AM – 6 PM",
+            award: null
+          },
+          {
+            name: "Dr. Kavita Sharma",
+            image: "ent2.jpg",
+            degree: "MBBS, DLO",
+            experience: "8 Years",
+            contact: "+91 9876543344",
+            availability: "Tue–Sat, 10 AM – 5 PM",
+            award: "ENT Specialist Award"
+          }
+        ]
+      },
+      {
+        name: "Gastroenterology",
+        icon: "fas fa-stomach",
+        doctors: [
+          {
+            name: "Dr. Amit Patel",
+            image: "gastroenterology1.jpg",
+            degree: "MBBS, DM (Gastroenterology)",
+            experience: "14 Years",
+            contact: "+91 9876543355",
+            availability: "Mon–Fri, 9 AM – 4 PM",
+            award: "Digestive Health Excellence Award"
+          },
+          {
+            name: "Dr. Sneha Iyer",
+            image: "gastroenterology2.jpg",
+            degree: "MBBS, MD (Medicine)",
+            experience: "10 Years",
+            contact: "+91 9876543366",
+            availability: "Mon–Sat, 10 AM – 5 PM",
+            award: null
+          }
+        ]
+      },
+      {
+        name: "Urology",
+        icon: "fas fa-kidneys",
+        doctors: [
+          {
+            name: "Dr. Prakash Joshi",
+            image: "urology1.jpg",
+            degree: "MBBS, MCh (Urology)",
+            experience: "17 Years",
+            contact: "+91 9876543377",
+            availability: "Mon–Sat, 8 AM – 6 PM",
+            award: null
+          },
+          {
+            name: "Dr. Rohan Desai",
+            image: "urology2.jpg",
+            degree: "MBBS, MS (General Surgery)",
+            experience: "9 Years",
+            contact: "+91 9876543388",
+            availability: "Tue–Fri, 9 AM – 5 PM",
+            award: "Urology Excellence Award"
+          }
+        ]
+      },
+      {
+        name: "Psychiatry",
+        icon: "fas fa-brain",
+        doctors: [
+          {
+            name: "Dr. Ananya Sen",
+            image: "psychiatry1.jpg",
+            degree: "MBBS, MD (Psychiatry)",
+            experience: "12 Years",
+            contact: "+91 9876543399",
+            availability: "Mon–Fri, 10 AM – 6 PM",
+            award: null
+          },
+          {
+            name: "Dr. Varun Kapoor",
+            image: "psychiatry2.jpg",
+            degree: "MBBS, DPM",
+            experience: "8 Years",
+            contact: "+91 9876543400",
+            availability: "Tue–Sat, 9 AM – 5 PM",
+            award: "Mental Health Excellence Award"
+          }
+        ]
+      },
+      {
+        name: "Oncology",
+        icon: "fas fa-microscope",
+        doctors: [
+          {
+            name: "Dr. Deepak Agarwal",
+            image: "oncology1.jpg",
+            degree: "MBBS, DM (Oncology)",
+            experience: "15 Years",
+            contact: "+91 9876543411",
+            availability: "Mon–Sat, 9 AM – 5 PM",
+            award: "Oncology Excellence Award"
+          },
+          {
+            name: "Dr. Shalini Gupta",
+            image: "oncology2.jpg",
+            degree: "MBBS, MD (Radiation Oncology)",
+            experience: "11 Years",
+            contact: "+91 9876543422",
+            availability: "Mon–Fri, 10 AM – 4 PM",
+            award: null
+          }
+        ]
+      },
+      {
+        name: "Nephrology",
+        icon: "fas fa-kidneys",
+        doctors: [
+          {
+            name: "Dr. Ramesh Iyer",
+            image: "nephrology1.jpg",
+            degree: "MBBS, DM (Nephrology)",
+            experience: "13 Years",
+            contact: "+91 9876543433",
+            availability: "Mon–Fri, 9 AM – 5 PM",
+            award: null
+          },
+          {
+            name: "Dr. Anita Kumar",
+            image: "nephrology2.jpg",
+            degree: "MBBS, MD (Medicine)",
+            experience: "9 Years",
+            contact: "+91 9876543444",
+            availability: "Tue–Sat, 10 AM – 6 PM",
+            award: "Kidney Care Excellence Award"
+          }
+        ]
+      },
+      {
+        name: "Endocrinology",
+        icon: "fas fa-vial",
+        doctors: [
+          {
+            name: "Dr. Suresh Menon",
+            image: "endocrinology1.jpg",
+            degree: "MBBS, DM (Endocrinology)",
+            experience: "14 Years",
+            contact: "+91 9876543455",
+            availability: "Mon–Fri, 9 AM – 4 PM",
+            award: "Diabetes Care Excellence Award"
+          },
+          {
+            name: "Dr. Priya Nair",
+            image: "endocrinology2.jpg",
+            degree: "MBBS, MD (Medicine)",
+            experience: "10 Years",
+            contact: "+91 9876543466",
+            availability: "Tue–Sat, 10 AM – 5 PM",
+            award: null
+          }
+        ]
+      },
+      {
+        name: "Pulmonology",
+        icon: "fas fa-lungs",
+        doctors: [
+          {
+            name: "Dr. Ajay Malhotra",
+            image: "pulmonology1.jpg",
+            degree: "MBBS, MD (Pulmonology)",
+            experience: "16 Years",
+            contact: "+91 9876543477",
+            availability: "Mon–Sat, 9 AM – 5 PM",
+            award: null
+          },
+          {
+            name: "Dr. Neha Sharma",
+            image: "pulmonology2.jpg",
+            degree: "MBBS, DTCD",
+            experience: "8 Years",
+            contact: "+91 9876543488",
+            availability: "Mon–Fri, 10 AM – 4 PM",
+            award: "Respiratory Care Excellence Award"
+          }
+        ]
+      },
+      {
+        name: "Rheumatology",
+        icon: "fas fa-bone",
+        doctors: [
+          {
+            name: "Dr. Karan Singh",
+            image: "rheumatology1.jpg",
+            degree: "MBBS, DM (Rheumatology)",
+            experience: "12 Years",
+            contact: "+91 9876543499",
+            availability: "Mon–Fri, 9 AM – 4 PM",
+            award: null
+          },
+          {
+            name: "Dr. Swati Reddy",
+            image: "rheumatology2.jpg",
+            degree: "MBBS, MD (Medicine)",
+            experience: "7 Years",
+            contact: "+91 9876543500",
+            availability: "Tue–Sat, 10 AM – 5 PM",
+            award: "Arthritis Care Excellence Award"
+          }
+        ]
+      },
+      {
+        name: "Hematology",
+        icon: "fas fa-tint",
+        doctors: [
+          {
+            name: "Dr. Rajesh Kumar",
+            image: "hematology1.jpg",
+            degree: "MBBS, DM (Hematology)",
+            experience: "14 Years",
+            contact: "+91 9876543511",
+            availability: "Mon–Fri, 9 AM – 5 PM",
+            award: "Blood Disorder Specialist Award"
+          },
+          {
+            name: "Dr. Anjali Mehta",
+            image: "hematology2.jpg",
+            degree: "MBBS, MD (Pathology)",
+            experience: "10 Years",
+            contact: "+91 9876543522",
+            availability: "Tue–Sat, 10 AM – 6 PM",
+            award: null
+          }
+        ]
+      },
+      {
+        name: "General Surgery",
+        icon: "fas fa-scalpel",
+        doctors: [
+          {
+            name: "Dr. Manoj Verma",
+            image: "general_surgery1.jpg",
+            degree: "MBBS, MS (General Surgery)",
+            experience: "18 Years",
+            contact: "+91 9876543533",
+            availability: "Mon–Sat, 8 AM – 6 PM",
+            award: null
+          },
+          {
+            name: "Dr. Sheetal Nair",
+            image: "general_surgery2.jpg",
+            degree: "MBBS, DNB (Surgery)",
+            experience: "11 Years",
+            contact: "+91 9876543544",
+            availability: "Mon–Fri, 9 AM – 5 PM",
+            award: "Surgical Excellence Award"
+          }
+        ]
+      },
+      {
+        name: "Anesthesiology",
+        icon: "fas fa-syringe",
+        doctors: [
+          {
+            name: "Dr. Arun Kumar",
+            image: "anesthesiology1.jpg",
+            degree: "MBBS, MD (Anesthesiology)",
+            experience: "15 Years",
+            contact: "+91 9876543555",
+            availability: "Mon–Sat, 8 AM – 6 PM",
+            award: "Anesthesia Excellence Award"
+          },
+          {
+            name: "Dr. Sunita Patel",
+            image: "anesthesiology2.jpg",
+            degree: "MBBS, DA",
+            experience: "9 Years",
+            contact: "+91 9876543566",
+            availability: "Mon–Fri, 9 AM – 5 PM",
+            award: null
+          }
+        ]
+      },
+      {
+        name: "Radiology",
+        icon: "fas fa-x-ray",
+        doctors: [
+          {
+            name: "Dr. Vikas Sharma",
+            image: "radiology1.jpg",
+            degree: "MBBS, MD (Radiology)",
+            experience: "16 Years",
+            contact: "+91 9876543577",
+            availability: "Mon–Sat, 9 AM – 5 PM",
+            award: null
+          },
+          {
+            name: "Dr. Nandini Rao",
+            image: "radiology2.jpg",
+            degree: "MBBS, DMRD",
+            experience: "10 Years",
+            contact: "+91 9876543588",
+            availability: "Mon–Fri, 10 AM – 6 PM",
+            award: "Diagnostic Imaging Excellence Award"
+          }
+        ]
+      }
+    ];
+  // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+      renderDepartments();
+      renderFilters();
+      setupEventListeners();
+    });
+
+    // Render departments and doctors
+    function renderDepartments() {
+      const container = document.getElementById('doctorContainer');
+      container.innerHTML = '';
+      
+      departments.forEach(dept => {
+        const departmentEl = document.createElement('section');
+        departmentEl.className = 'department';
+        departmentEl.setAttribute('data-dept', dept.name);
+        
+        let doctorsHTML = '';
+        dept.doctors.forEach(doctor => {
+          doctorsHTML += `
+            <div class="doctor-card">
+              <div class="doctor-img">
+                <img src="${doctor.image}" alt="${doctor.name}">
+              </div>
+              <div class="doctor-info">
+                <h3>${doctor.name}</h3>
+                <p><i class="fas fa-graduation-cap"></i> ${doctor.degree}</p>
+                <p><i class="fas fa-briefcase"></i> ${doctor.experience}</p>
+                <p><i class="fas fa-phone"></i> ${doctor.contact}</p>
+                <p><i class="fas fa-calendar-alt"></i> ${doctor.availability}</p>
+                ${doctor.award ? `<p class="medal"><i class="fas fa-award"></i> ${doctor.award}</p>` : ''}
+                <button class="book-btn" data-doctor="${doctor.name}">Book Appointment</button>
+              </div>
+            </div>
+          `;
+        });
+        
+        departmentEl.innerHTML = `
+          <h2><i class="${dept.icon}"></i> ${dept.name}</h2>
+          <div class="doctor-list">
+            ${doctorsHTML}
+          </div>
+        `;
+        
+        container.appendChild(departmentEl);
+      });
+    }
+
+    // Render department filters
+    function renderFilters() {
+      const filtersContainer = document.getElementById('department-filters');
+      filtersContainer.innerHTML = '<button class="filter-btn active" data-dept="all">All Departments</button>';
+      
+      departments.forEach(dept => {
+        const button = document.createElement('button');
+        button.className = 'filter-btn';
+        button.setAttribute('data-dept', dept.name);
+        button.innerHTML = `<i class="${dept.icon}"></i> ${dept.name}`;
+        filtersContainer.appendChild(button);
+      });
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Search functionality
+      document.getElementById('search').addEventListener('input', function() {
+        filterDoctors();
+      });
+      
+      // Department filter buttons
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          filterDoctors();
+        });
+      });
+      
+      // Reset button
+      document.getElementById('reset-btn').addEventListener('click', function() {
+        document.getElementById('search').value = '';
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('.filter-btn[data-dept="all"]').classList.add('active');
+        filterDoctors();
+      });
+      
+      // Scroll to top button
+      document.getElementById('scroll-top').addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+      
+      // Book appointment buttons - REDIRECT TO APPOINTMENT PAGE
+      document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('book-btn')) {
+          const doctorName = e.target.getAttribute('data-doctor');
+          // Redirect to appointment page with doctor name as parameter
+          window.location.href = `appointment.html?doctor=${encodeURIComponent(doctorName)}`;
+        }
+      });
+    }
+
+    // Filter doctors based on search and department
+    function filterDoctors() {
+      const query = document.getElementById('search').value.toLowerCase();
+      const activeDept = document.querySelector('.filter-btn.active').dataset.dept;
+      const departments = document.querySelectorAll('.department');
+      let hasResults = false;
+      
+      departments.forEach(dept => {
+        const deptName = dept.dataset.dept.toLowerCase();
+        const doctors = dept.querySelectorAll('.doctor-card');
+        let deptVisible = false;
+        
+        // Check if department matches active filter
+        const deptMatch = activeDept === 'all' || deptName === activeDept.toLowerCase();
+        
+        doctors.forEach(doc => {
+          const docName = doc.querySelector('h3').textContent.toLowerCase();
+          const docVisible = deptMatch && (docName.includes(query) || deptName.includes(query));
+          
+          if (docVisible) {
+            doc.style.display = 'block';
+            deptVisible = true;
+            hasResults = true;
+          } else {
+            doc.style.display = 'none';
+          }
+        });
+        
+        dept.style.display = deptVisible ? 'block' : 'none';
+      });
+      
+      // Show/hide no results message
+      document.getElementById('no-results').style.display = hasResults ? 'none' : 'flex';
+    }
+  </script>
+</body>
+</html>

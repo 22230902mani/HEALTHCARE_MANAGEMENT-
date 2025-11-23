@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthCare Pro - System Settings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c7fb8;
+            --secondary: #7fcdbb;
+            --accent: #edf8b1;
+            --dark: #253237;
+            --light: #f8f9fa;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --gray: #95a5a6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            grid-template-rows: auto 1fr auto;
+            min-height: 100vh;
+        }
+
+        .home-btn {
+            background: var(--secondary);
+            color: var(--dark);
+            padding: 0.4rem 0.9rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+        }
+
+        .home-btn i {
+            color: var(--dark);
+        }
+
+        .home-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .home-btn:hover i {
+            color: white;
+        }
+
+        /* Header Styles */
+        header {
+            grid-column: 1 / -1;
+            background: rgb(57, 49, 86);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .header-info {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background: white;
+            padding: 1.5rem 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            height: 100%;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem 1.5rem;
+            color: var(--dark);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(44, 127, 184, 0.1);
+            border-left: 4px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .sidebar-menu a.active {
+            background: rgba(44, 127, 184, 0.1);
+            border-left: 4px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .sidebar-menu i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: white;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1e6a9c;
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: #6bb8a5;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #27ae60;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        /* Page Content */
+        .page-content {
+            padding: 0 2rem 2rem;
+        }
+
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(57, 49, 86, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-header h2 {
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+
+        .card-header i {
+            color: var(--secondary);
+            font-size: 1.5rem;
+        }
+
+        /* Settings Layout */
+        .settings-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+        }
+
+        .settings-sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(57, 49, 86, 0.1);
+            height: fit-content;
+        }
+
+        .settings-nav {
+            list-style: none;
+        }
+
+        .settings-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .settings-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem;
+            color: var(--dark);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+        }
+
+        .settings-nav a:hover {
+            background: rgba(44, 127, 184, 0.1);
+            color: var(--primary);
+        }
+
+        .settings-nav a.active {
+            background: rgba(44, 127, 184, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .settings-nav i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .settings-content {
+            min-height: 600px;
+        }
+
+        .settings-section {
+            display: none;
+        }
+
+        .settings-section.active {
+            display: block;
+        }
+
+        /* Form Styles */
+        .form-container {
+            max-width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(44, 127, 184, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-help {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-top: 0.5rem;
+        }
+
+        /* Checkbox and Radio Styles */
+        .checkbox-group, .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .checkbox-item, .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .checkbox-item input, .radio-item input {
+            width: 18px;
+            height: 18px;
+        }
+
+        .checkbox-item label, .radio-item label {
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        .toggle-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .toggle-item:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-label {
+            flex: 1;
+        }
+
+        .toggle-label h4 {
+            margin-bottom: 0.2rem;
+            font-size: 1rem;
+        }
+
+        .toggle-label p {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        /* User List */
+        .user-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .user-item:hover {
+            background: #e9ecef;
+        }
+
+        .user-avatar-sm {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .user-role {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Backup Section */
+        .backup-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .backup-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(57, 49, 86, 0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .backup-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .backup-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .backup-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .backup-desc {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* System Status */
+        .system-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .status-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(57, 49, 86, 0.1);
+            text-align: center;
+        }
+
+        .status-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .status-online {
+            color: var(--success);
+        }
+
+        .status-warning {
+            color: var(--warning);
+        }
+
+        .status-offline {
+            color: var(--danger);
+        }
+
+        .status-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Footer Styles */
+        footer {
+            grid-column: 1 / -1;
+            background: var(--dark);
+            color: white;
+            padding: 1.5rem 2rem;
+            text-align: center;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            background: var(--light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .settings-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .settings-sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .header-info {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .page-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .backup-options, .system-status {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .backup-options, .system-status {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .user-actions {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <a href="dashboard.html" class="home-btn">
+                    <i class="fas fa-house"></i> Home
+                </a>
+                <i class="fas fa-heartbeat"></i>
+                <h1>HealthCare Pro - System Settings</h1>
+            </div>
+            <div class="header-info">
+                <div class="user-profile">
+                    <div class="user-avatar">LM</div>
+                    <div>
+                        <div>Dr. Manikanta</div>
+                        <div style="font-size: 0.8rem;">Administrator</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="appointment.html"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+                <li><a href="doctor.html"><i class="fas fa-user-md"></i> Doctors</a></li>
+                <li><a href="department.html"><i class="fas fa-building"></i> Departments</a></li>
+                <li><a href="paitent.html"><i class="fas fa-procedures"></i> Patients</a></li>
+                <li><a href="payment.html"><i class="fas fa-credit-card"></i> Payments</a></li>
+                <li><a href="report.html"><i class="fas fa-chart-bar"></i> Reports</a></li>
+                <li><a href="settings.html" class="active"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="help.html"><i class="fas fa-question-circle"></i> Help</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main>
+            <div class="page-header">
+                <div class="page-title">
+                    <i class="fas fa-cog"></i>
+                    <h2>System Settings</h2>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-secondary" id="resetSettings">
+                        <i class="fas fa-undo"></i> Reset to Default
+                    </button>
+                    <button class="btn btn-primary" id="saveSettings">
+                        <i class="fas fa-save"></i> Save All Changes
+                    </button>
+                </div>
+            </div>
+
+            <div class="page-content">
+                <div class="settings-container">
+                    <!-- Settings Sidebar -->
+                    <div class="settings-sidebar">
+                        <ul class="settings-nav">
+                            <li><a href="#" class="settings-nav-link active" data-section="general"><i class="fas fa-hospital"></i> General</a></li>
+                            <li><a href="#" class="settings-nav-link" data-section="users"><i class="fas fa-users"></i> User Management</a></li>
+                            <li><a href="#" class="settings-nav-link" data-section="security"><i class="fas fa-shield-alt"></i> Security</a></li>
+                            <li><a href="#" class="settings-nav-link" data-section="notifications"><i class="fas fa-bell"></i> Notifications</a></li>
+                            <li><a href="#" class="settings-nav-link" data-section="billing"><i class="fas fa-credit-card"></i> Billing</a></li>
+                            <li><a href="#" class="settings-nav-link" data-section="integration"><i class="fas fa-plug"></i> Integrations</a></li>
+                            <li><a href="#" class="settings-nav-link" data-section="backup"><i class="fas fa-database"></i> Backup & Restore</a></li>
+                            <li><a href="#" class="settings-nav-link" data-section="system"><i class="fas fa-server"></i> System Status</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Settings Content -->
+                    <div class="settings-content">
+                        <!-- General Settings -->
+                        <div class="settings-section active" id="general-section">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-hospital"></i> Hospital Information</h2>
+                                </div>
+                                <div class="form-container">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="hospitalName">Hospital Name</label>
+                                            <input type="text" id="hospitalName" class="form-control" value="HealthCare Pro Hospital">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="hospitalCode">Hospital Code</label>
+                                            <input type="text" id="hospitalCode" class="form-control" value="HCP-2023">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="hospitalPhone">Phone Number</label>
+                                            <input type="text" id="hospitalPhone" class="form-control" value="+1 (555) 123-4567">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="hospitalEmail">Email Address</label>
+                                            <input type="email" id="hospitalEmail" class="form-control" value="info@healthcarepro.com">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="hospitalAddress">Address</label>
+                                        <textarea id="hospitalAddress" class="form-control" rows="3">123 Medical Drive, Healthcare City, HC 12345</textarea>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="timezone">Timezone</label>
+                                            <select id="timezone" class="form-control">
+                                                <option value="IST" selected>Indian Standard Time (IST)</option>
+                                                <option value="EST">Eastern Standard Time (EST)</option>
+                                                <option value="PST">Pacific Standard Time (PST)</option>
+                                                <option value="GMT">Greenwich Mean Time (GMT)</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="dateFormat">Date Format</label>
+                                            <select id="dateFormat" class="form-control">
+                                                <option value="dd/mm/yyyy" selected>DD/MM/YYYY</option>
+                                                <option value="mm/dd/yyyy">MM/DD/YYYY</option>
+                                                <option value="yyyy-mm-dd">YYYY-MM-DD</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-language"></i> Language & Regional Settings</h2>
+                                </div>
+                                <div class="form-container">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="language">System Language</label>
+                                            <select id="language" class="form-control">
+                                                <option value="en" selected>English</option>
+                                                <option value="hi">Hindi</option>
+                                                <option value="te">Telugu</option>
+                                                <option value="ta">Tamil</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="currency">Currency</label>
+                                            <select id="currency" class="form-control">
+                                                <option value="INR" selected>Indian Rupee (₹)</option>
+                                                <option value="USD">US Dollar ($)</option>
+                                                <option value="EUR">Euro (€)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Management -->
+                        <div class="settings-section" id="users-section">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-users"></i> User Accounts</h2>
+                                    <button class="btn btn-primary" id="addUserBtn">
+                                        <i class="fas fa-plus"></i> Add User
+                                    </button>
+                                </div>
+                                <div class="user-list">
+                                    <div class="user-item">
+                                        <div class="user-avatar-sm">LM</div>
+                                        <div class="user-info">
+                                            <div class="user-name">Dr. Manikanta</div>
+                                            <div class="user-role">Administrator</div>
+                                        </div>
+                                        <div class="user-actions">
+                                            <button class="btn btn-secondary" style="padding: 0.3rem 0.6rem;">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-danger" style="padding: 0.3rem 0.6rem;">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="user-item">
+                                        <div class="user-avatar-sm">SM</div>
+                                        <div class="user-info">
+                                            <div class="user-name">Dr. Sarah Miller</div>
+                                            <div class="user-role">Cardiologist</div>
+                                        </div>
+                                        <div class="user-actions">
+                                            <button class="btn btn-secondary" style="padding: 0.3rem 0.6rem;">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-danger" style="padding: 0.3rem 0.6rem;">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="user-item">
+                                        <div class="user-avatar-sm">JW</div>
+                                        <div class="user-info">
+                                            <div class="user-name">Dr. James Wilson</div>
+                                            <div class="user-role">Pediatrician</div>
+                                        </div>
+                                        <div class="user-actions">
+                                            <button class="btn btn-secondary" style="padding: 0.3rem 0.6rem;">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-danger" style="padding: 0.3rem 0.6rem;">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="user-item">
+                                        <div class="user-avatar-sm">LB</div>
+                                        <div class="user-info">
+                                            <div class="user-name">Dr. Lisa Brown</div>
+                                            <div class="user-role">Orthopedic Surgeon</div>
+                                        </div>
+                                        <div class="user-actions">
+                                            <button class="btn btn-secondary" style="padding: 0.3rem 0.6rem;">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-danger" style="padding: 0.3rem 0.6rem;">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-user-shield"></i> Role Permissions</h2>
+                                </div>
+                                <div class="form-container">
+                                    <div class="form-group">
+                                        <label>Default User Permissions</label>
+                                        <div class="checkbox-group">
+                                            <div class="checkbox-item">
+                                                <input type="checkbox" id="permPatients" checked>
+                                                <label for="permPatients">View Patient Records</label>
+                                            </div>
+                                            <div class="checkbox-item">
+                                                <input type="checkbox" id="permAppointments" checked>
+                                                <label for="permAppointments">Manage Appointments</label>
+                                            </div>
+                                            <div class="checkbox-item">
+                                                <input type="checkbox" id="permBilling">
+                                                <label for="permBilling">Access Billing</label>
+                                            </div>
+                                            <div class="checkbox-item">
+                                                <input type="checkbox" id="permReports">
+                                                <label for="permReports">View Reports</label>
+                                            </div>
+                                            <div class="checkbox-item">
+                                                <input type="checkbox" id="permSettings">
+                                                <label for="permSettings">System Settings</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Security Settings -->
+                        <div class="settings-section" id="security-section">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-shield-alt"></i> Security & Authentication</h2>
+                                </div>
+                                <div class="form-container">
+                                    <div class="form-group">
+                                        <label for="sessionTimeout">Session Timeout (minutes)</label>
+                                        <input type="number" id="sessionTimeout" class="form-control" value="30" min="5" max="120">
+                                        <div class="form-help">Automatically log out users after specified minutes of inactivity</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="passwordPolicy">Password Policy</label>
+                                        <select id="passwordPolicy" class="form-control">
+                                            <option value="basic">Basic (6 characters minimum)</option>
+                                            <option value="standard" selected>Standard (8 characters, letters and numbers)</option>
+                                            <option value="strict">Strict (10 characters, mixed case, numbers, symbols)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="maxLoginAttempts">Maximum Login Attempts</label>
+                                        <input type="number" id="maxLoginAttempts" class="form-control" value="5" min="3" max="10">
+                                        <div class="form-help">Account will be locked after specified failed login attempts</div>
+                                    </div>
+                                    <div class="toggle-item">
+                                        <div class="toggle-label">
+                                            <h4>Two-Factor Authentication</h4>
+                                            <p>Require users to verify identity using a second factor</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="twoFactorAuth">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="toggle-item">
+                                        <div class="toggle-label">
+                                            <h4>IP Address Restrictions</h4>
+                                            <p>Only allow access from specific IP addresses</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="ipRestrictions">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-key"></i> Change Password</h2>
+                                </div>
+                                <div class="form-container">
+                                    <div class="form-group">
+                                        <label for="currentPassword">Current Password</label>
+                                        <input type="password" id="currentPassword" class="form-control">
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="newPassword">New Password</label>
+                                            <input type="password" id="newPassword" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="confirmPassword">Confirm Password</label>
+                                            <input type="password" id="confirmPassword" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary">
+                                            <i class="fas fa-key"></i> Update Password
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notifications -->
+                        <div class="settings-section" id="notifications-section">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-bell"></i> Notification Preferences</h2>
+                                </div>
+                                <div class="form-container">
+                                    <div class="toggle-item">
+                                        <div class="toggle-label">
+                                            <h4>Email Notifications</h4>
+                                            <p>Receive notifications via email</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="emailNotifications" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="toggle-item">
+                                        <div class="toggle-label">
+                                            <h4>SMS Notifications</h4>
+                                            <p>Receive notifications via SMS</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="smsNotifications" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="toggle-item">
+                                        <div class="toggle-label">
+                                            <h4>Push Notifications</h4>
+                                            <p>Receive push notifications in the application</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="pushNotifications">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-envelope"></i> Notification Types</h2>
+                                </div>
+                                <div class="form-container">
+                                    <div class="form-group">
+                                        <label>Which notifications would you like to receive?</label>
+                                        <div class="checkbox-group">
+                                            <div class="checkbox-item">
+                                                <input type="checkbox" id="notifyAppointments" checked>
+                                                <label for="notifyAppointments">New Appointments</label>
+                                            </div>
+                                            <div class="checkbox-item">
+                                                <input type="checkbox" id="notifyPatients" checked>
+                                                <label for="notifyPatients">Patient Admissions</label>
+                                            </div>
+                                            <div class="checkbox-item">
+                                                <input type="checkbox" id="notifyPayments">
+                                                <label for="notifyPayments">Payment Reminders</label>
+                                            </div>
+                                            <div class="checkbox-item">
+                                                <input type="checkbox" id="notifyLabResults" checked>
+                                                <label for="notifyLabResults">Lab Results</label>
+                                            </div>
+                                            <div class="checkbox-item">
+                                                <input type="checkbox" id="notifySystemAlerts" checked>
+                                                <label for="notifySystemAlerts">System Alerts</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="notificationFrequency">Notification Frequency</label>
+                                        <select id="notificationFrequency" class="form-control">
+                                            <option value="immediately">Immediately</option>
+                                            <option value="hourly" selected>Hourly Digest</option>
+                                            <option value="daily">Daily Summary</option>
+                                            <option value="weekly">Weekly Summary</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Billing Settings -->
+                        <div class="settings-section" id="billing-section">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-credit-card"></i> Billing Configuration</h2>
+                                </div>
+                                <div class="form-container">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="taxRate">Tax Rate (%)</label>
+                                            <input type="number" id="taxRate" class="form-control" value="18" min="0" max="30" step="0.1">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="currencySymbol">Currency Symbol</label>
+                                            <input type="text" id="currencySymbol" class="form-control" value="₹" maxlength="3">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="invoicePrefix">Invoice Prefix</label>
+                                        <input type="text" id="invoicePrefix" class="form-control" value="INV">
+                                    </div>
+                                    <div class="toggle-item">
+                                        <div class="toggle-label">
+                                            <h4>Auto-generate Invoices</h4>
+                                            <p>Automatically generate invoices for completed appointments</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="autoGenerateInvoices" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="toggle-item">
+                                        <div class="toggle-label">
+                                            <h4>Send Payment Reminders</h4>
+                                            <p>Automatically send payment reminders for overdue invoices</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="sendPaymentReminders" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-receipt"></i> Invoice Settings</h2>
+                                </div>
+                                <div class="form-container">
+                                    <div class="form-group">
+                                        <label for="invoiceTerms">Invoice Terms & Conditions</label>
+                                        <textarea id="invoiceTerms" class="form-control" rows="4">Payment is due within 30 days of invoice date. A 1.5% monthly service charge is applicable on overdue invoices.</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="invoiceNotes">Default Invoice Notes</label>
+                                        <textarea id="invoiceNotes" class="form-control" rows="3">Thank you for choosing HealthCare Pro Hospital. For any queries, please contact our billing department.</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Integrations -->
+                        <div class="settings-section" id="integration-section">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-plug"></i> System Integrations</h2>
+                                </div>
+                                <div class="form-container">
+                                    <div class="toggle-item">
+                                        <div class="toggle-label">
+                                            <h4>Laboratory System</h4>
+                                            <p>Connect with laboratory management systems</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="labIntegration" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="toggle-item">
+                                        <div class="toggle-label">
+                                            <h4>Pharmacy System</h4>
+                                            <p>Connect with pharmacy management systems</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="pharmacyIntegration">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="toggle-item">
+                                        <div class="toggle-label">
+                                            <h4>Insurance Providers</h4>
+                                            <p>Connect with insurance provider systems</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="insuranceIntegration" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="toggle-item">
+                                        <div class="toggle-label">
+                                            <h4>Payment Gateways</h4>
+                                            <p>Connect with online payment systems</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="paymentIntegration" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-api"></i> API Configuration</h2>
+                                </div>
+                                <div class="form-container">
+                                    <div class="form-group">
+                                        <label for="apiKey">API Key</label>
+                                        <input type="text" id="apiKey" class="form-control" value="sk_live_healthcarepro_2023" readonly>
+                                        <div class="form-help">
+                                            <button class="btn btn-secondary" style="padding: 0.3rem 0.6rem; margin-top: 0.5rem;">
+                                                <i class="fas fa-redo"></i> Regenerate Key
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="apiSecret">API Secret</label>
+                                        <input type="password" id="apiSecret" class="form-control" value="························" readonly>
+                                        <div class="form-help">
+                                            <button class="btn btn-secondary" style="padding: 0.3rem 0.6rem; margin-top: 0.5rem;">
+                                                <i class="fas fa-eye"></i> Show Secret
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Backup & Restore -->
+                        <div class="settings-section" id="backup-section">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-database"></i> Data Backup</h2>
+                                </div>
+                                <div class="backup-options">
+                                    <div class="backup-card" data-backup="local">
+                                        <div class="backup-icon">
+                                            <i class="fas fa-desktop"></i>
+                                        </div>
+                                        <div class="backup-name">Local Backup</div>
+                                        <div class="backup-desc">Save backup to local server</div>
+                                    </div>
+                                    <div class="backup-card" data-backup="cloud">
+                                        <div class="backup-icon">
+                                            <i class="fas fa-cloud"></i>
+                                        </div>
+                                        <div class="backup-name">Cloud Backup</div>
+                                        <div class="backup-desc">Save backup to cloud storage</div>
+                                    </div>
+                                    <div class="backup-card" data-backup="external">
+                                        <div class="backup-icon">
+                                            <i class="fas fa-hdd"></i>
+                                        </div>
+                                        <div class="backup-name">External Drive</div>
+                                        <div class="backup-desc">Save backup to external drive</div>
+                                    </div>
+                                    <div class="backup-card" data-backup="auto">
+                                        <div class="backup-icon">
+                                            <i class="fas fa-robot"></i>
+                                        </div>
+                                        <div class="backup-name">Auto Backup</div>
+                                        <div class="backup-desc">Schedule automatic backups</div>
+                                    </div>
+                                </div>
+                                <div class="form-container">
+                                    <div class="form-group">
+                                        <label for="backupFrequency">Backup Frequency</label>
+                                        <select id="backupFrequency" class="form-control">
+                                            <option value="daily">Daily</option>
+                                            <option value="weekly" selected>Weekly</option>
+                                            <option value="monthly">Monthly</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary">
+                                            <i class="fas fa-download"></i> Create Backup Now
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-history"></i> Restore Data</h2>
+                                </div>
+                                <div class="form-container">
+                                    <div class="form-group">
+                                        <label for="backupFile">Select Backup File</label>
+                                        <input type="file" id="backupFile" class="form-control">
+                                        <div class="form-help">Select a backup file to restore system data</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-success">
+                                            <i class="fas fa-upload"></i> Restore from Backup
+                                        </button><br>
+                                        <button class="btn btn-danger" style="margin-left: 1rem;">
+                                            <i class="fas fa-trash"></i> Clear All Data
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- System Status -->
+                        <div class="settings-section" id="system-section">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-server"></i> System Health</h2>
+                                </div>
+                                <div class="system-status">
+                                    <div class="status-card">
+                                        <div class="status-icon status-online">
+                                            <i class="fas fa-database"></i>
+                                        </div>
+                                        <div class="status-value">98%</div>
+                                        <div class="status-label">Database</div>
+                                    </div>
+                                    <div class="status-card">
+                                        <div class="status-icon status-online">
+                                            <i class="fas fa-network-wired"></i>
+                                        </div>
+                                        <div class="status-value">100%</div>
+                                        <div class="status-label">Network</div>
+                                    </div>
+                                    <div class="status-card">
+                                        <div class="status-icon status-warning">
+                                            <i class="fas fa-memory"></i>
+                                        </div>
+                                        <div class="status-value">76%</div>
+                                        <div class="status-label">Memory</div>
+                                    </div>
+                                    <div class="status-card">
+                                        <div class="status-icon status-online">
+                                            <i class="fas fa-hdd"></i>
+                                        </div>
+                                        <div class="status-value">64%</div>
+                                        <div class="status-label">Storage</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-info-circle"></i> System Information</h2>
+                                </div>
+                                <div class="form-container">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Software Version</label>
+                                            <div class="form-control" style="background: var(--light);">HealthCare Pro v3.2.1</div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Last Updated</label>
+                                            <div class="form-control" style="background: var(--light);">2023-10-15</div>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Database Version</label>
+                                            <div class="form-control" style="background: var(--light);">MySQL 8.0</div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Server OS</label>
+                                            <div class="form-control" style="background: var(--light);">Ubuntu 20.04 LTS</div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>System Uptime</label>
+                                        <div class="form-control" style="background: var(--light);">45 days, 12 hours, 23 minutes</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary">
+                                            <i class="fas fa-sync"></i> Check for Updates
+                                        </button><br>
+                                        <button class="btn btn-secondary" style="margin-left: 1rem;">
+                                            <i class="fas fa-bug"></i> System Diagnostics
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2023 HealthCare Pro Management System. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal" id="addUserModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New User</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="userFirstName">First Name</label>
+                            <input type="text" id="userFirstName" class="form-control" placeholder="Enter first name">
+                        </div>
+                        <div class="form-group">
+                            <label for="userLastName">Last Name</label>
+                            <input type="text" id="userLastName" class="form-control" placeholder="Enter last name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmail">Email Address</label>
+                        <input type="email" id="userEmail" class="form-control" placeholder="Enter email address">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="userRole">Role</label>
+                            <select id="userRole" class="form-control">
+                                <option value="">Select Role</option>
+                                <option value="admin">Administrator</option>
+                                <option value="doctor">Doctor</option>
+                                <option value="nurse">Nurse</option>
+                                <option value="staff">Staff</option>
+                            </select>
+                        </div>
+                       <div class="form-group">
+    <label for="userDepartment">Department</label>
+    <select id="userDepartment" class="form-control">
+        <option value="">Select Department</option>
+        <option value="cardiology">Cardiology</option>
+        <option value="neurology">Neurology</option>
+        <option value="orthopedics">Orthopedics</option>
+        <option value="pediatrics">Pediatrics</option>
+        <option value="dermatology">Dermatology</option>
+        <option value="ophthalmology">Ophthalmology</option>
+        <option value="gynecology">Gynecology</option>
+        <option value="ent">ENT (Ear, Nose & Throat)</option>
+        <option value="gastroenterology">Gastroenterology</option>
+        <option value="urology">Urology</option>
+        <option value="psychiatry">Psychiatry</option>
+        <option value="oncology">Oncology</option>
+        <option value="nephrology">Nephrology</option>
+        <option value="endocrinology">Endocrinology</option>
+        <option value="pulmonology">Pulmonology</option>
+        <option value="rheumatology">Rheumatology</option>
+        <option value="hematology">Hematology</option>
+        <option value="general-surgery">General Surgery</option>
+        <option value="anesthesiology">Anesthesiology</option>
+        <option value="radiology">Radiology</option>
+        <option value="emergency">Emergency Medicine</option>
+        <option value="critical-care">Critical Care</option>
+        <option value="pathology">Pathology</option>
+        <option value="physical-medicine">Physical Medicine & Rehabilitation</option>
+        <option value="family-medicine">Family Medicine</option>
+        <option value="internal-medicine">Internal Medicine</option>
+        <option value="neonatology">Neonatology</option>
+        <option value="infectious-disease">Infectious Disease</option>
+        <option value="allergy-immunology">Allergy & Immunology</option>
+        <option value="pain-management">Pain Management</option>
+        <option value="palliative-care">Palliative Care</option>
+        <option value="sleep-medicine">Sleep Medicine</option>
+        <option value="sports-medicine">Sports Medicine</option>
+        <option value="geriatrics">Geriatrics</option>
+        <option value="bariatrics">Bariatrics</option>
+        <option value="plastic-surgery">Plastic Surgery</option>
+        <option value="vascular-surgery">Vascular Surgery</option>
+        <option value="cardiac-surgery">Cardiac Surgery</option>
+        <option value="neurosurgery">Neurosurgery</option>
+        <option value="orthopedic-surgery">Orthopedic Surgery</option>
+        <option value="pediatric-surgery">Pediatric Surgery</option>
+    </select>
+</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="userPassword">Temporary Password</label>
+                        <input type="password" id="userPassword" class="form-control" placeholder="Enter temporary password">
+                        <div class="form-help">User will be prompted to change password on first login</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelUserBtn">Cancel</button>
+                <button class="btn btn-primary" id="saveUserBtn">Save User</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up navigation
+            setupNavigation();
+            
+            // Set up modals
+            setupModals();
+            
+            // Set up save functionality
+            setupSaveFunctionality();
+            
+            // Set up backup functionality
+            setupBackupFunctionality();
+        });
+
+        // Setup Navigation
+        function setupNavigation() {
+            const navLinks = document.querySelectorAll('.settings-nav-link');
+            const sections = document.querySelectorAll('.settings-section');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Get target section
+                    const targetSection = this.getAttribute('data-section');
+                    
+                    // Update active nav link
+                    navLinks.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show target section, hide others
+                    sections.forEach(section => {
+                        if (section.id === `${targetSection}-section`) {
+                            section.classList.add('active');
+                        } else {
+                            section.classList.remove('active');
+                        }
+                    });
+                });
+            });
+        }
+
+        // Setup Modals
+        function setupModals() {
+            const addUserBtn = document.getElementById('addUserBtn');
+            const addUserModal = document.getElementById('addUserModal');
+            const cancelUserBtn = document.getElementById('cancelUserBtn');
+            const saveUserBtn = document.getElementById('saveUserBtn');
+            const closeBtns = document.querySelectorAll('.close-btn');
+            
+            // Open add user modal
+            addUserBtn.addEventListener('click', () => {
+                addUserModal.style.display = 'flex';
+            });
+            
+            // Close modals
+            const closeModal = (modal) => {
+                modal.style.display = 'none';
+            };
+            
+            closeBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    closeModal(modal);
+                });
+            });
+            
+            cancelUserBtn.addEventListener('click', () => {
+                closeModal(addUserModal);
+            });
+            
+            // Save user
+            saveUserBtn.addEventListener('click', () => {
+                // In a real application, you would save the user to the database
+                alert('User added successfully!');
+                closeModal(addUserModal);
+                // Reset form
+                document.getElementById('userForm').reset();
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (event) => {
+                if (event.target.classList.contains('modal')) {
+                    closeModal(event.target);
+                }
+            });
+        }
+
+        // Setup Save Functionality
+        function setupSaveFunctionality() {
+            const saveSettingsBtn = document.getElementById('saveSettings');
+            const resetSettingsBtn = document.getElementById('resetSettings');
+            
+            // Save all settings
+            saveSettingsBtn.addEventListener('click', function() {
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                
+                // Simulate API call to save settings
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-save"></i> Save All Changes';
+                    showNotification('Settings saved successfully!', 'success');
+                }, 1500);
+            });
+            
+            // Reset to default settings
+            resetSettingsBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to reset all settings to default? This action cannot be undone.')) {
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resetting...';
+                    
+                    // Simulate API call to reset settings
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="fas fa-undo"></i> Reset to Default';
+                        showNotification('Settings reset to default values!', 'success');
+                        // In a real app, we would reload the page or reset form values
+                    }, 1500);
+                }
+            });
+            
+            // Show notification
+            function showNotification(message, type) {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 1rem 1.5rem;
+                    background: ${type === 'success' ? 'var(--success)' : 'var(--danger)'};
+                    color: white;
+                    border-radius: 5px;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                    z-index: 1001;
+                    font-weight: 600;
+                `;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                // Remove notification after 3 seconds
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
+        }
+
+        // Setup Backup Functionality
+        function setupBackupFunctionality() {
+            const backupCards = document.querySelectorAll('.backup-card');
+            
+            backupCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const backupType = this.getAttribute('data-backup');
+                    
+                    // Update active backup card
+                    backupCards.forEach(c => c.style.borderColor = 'transparent');
+                    this.style.borderColor = 'var(--primary)';
+                    
+                    // Show confirmation based on backup type
+                    let message = '';
+                    switch(backupType) {
+                        case 'local':
+                            message = 'Create local backup on server?';
+                            break;
+                        case 'cloud':
+                            message = 'Create cloud backup?';
+                            break;
+                        case 'external':
+                            message = 'Create backup on external drive?';
+                            break;
+                        case 'auto':
+                            message = 'Configure automatic backup schedule?';
+                            break;
+                    }
+                    
+                    if (confirm(message)) {
+                        // Simulate backup process
+                        const backupBtn = document.querySelector('.btn-primary i.fa-download').closest('button');
+                        const originalText = backupBtn.innerHTML;
+                        
+                        backupBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Backup...';
+                        backupBtn.disabled = true;
+                        
+                        setTimeout(() => {
+                            backupBtn.innerHTML = originalText;
+                            backupBtn.disabled = false;
+                            alert('Backup created successfully!');
+                        }, 2000);
+                    }
+                });
+            });
+            
+            // Show API secret
+            document.querySelector('button .fa-eye').closest('button').addEventListener('click', function(e) {
+                e.preventDefault();
+                const apiSecretInput = document.getElementById('apiSecret');
+                
+                if (apiSecretInput.type === 'password') {
+                    apiSecretInput.type = 'text';
+                    this.innerHTML = '<i class="fas fa-eye-slash"></i> Hide Secret';
+                } else {
+                    apiSecretInput.type = 'password';
+                    this.innerHTML = '<i class="fas fa-eye"></i> Show Secret';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

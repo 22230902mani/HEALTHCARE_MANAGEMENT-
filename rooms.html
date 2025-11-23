@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department Rooms | Healthcare Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1565c0;
+            --primary-light: #e3f2fd;
+            --secondary: #4caf50;
+            --danger: #f44336;
+            --warning: #ff9800;
+            --text: #333;
+            --text-light: #666;
+            --bg: #f8f9fa;
+            --sidebar-bg: #ffffff;
+            --card-bg: #ffffff;
+            --transition: all 0.3s ease;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            box-shadow: var(--shadow);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            z-index: 100;
+            animation: fadeInLeft 1s ease;
+        }
+
+        @keyframes fadeInLeft {
+            0% { opacity: 0; transform: translateX(-30px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .sidebar-header {
+            padding: 25px 20px 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        .sidebar-header h2 i {
+            font-size: 24px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 15px 0;
+        }
+
+        .sidebar-menu li {
+            margin: 5px 15px;
+        }
+
+        .sidebar-menu a {
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            transition: var(--transition);
+            font-size: 16px;
+        }
+
+        .sidebar-menu a i {
+            font-size: 18px;
+            color: var(--primary);
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(21, 101, 192, 0.1);
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu a.active {
+            background: rgba(21, 101, 192, 0.15);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .sidebar hr {
+            border: none;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #ddd, transparent);
+            margin: 20px 0;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 28px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Search and Filter */
+        .search-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .reset-btn {
+            padding: 12px 25px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .reset-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        /* Department Filter */
+        .department-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .filter-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Room Grid */
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .room-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .room-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .room-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .room-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .room-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-available {
+            background: rgba(76, 175, 80, 0.15);
+            color: var(--secondary);
+        }
+
+        .status-occupied {
+            background: rgba(244, 67, 54, 0.15);
+            color: var(--danger);
+        }
+
+        .status-maintenance {
+            background: rgba(255, 152, 0, 0.15);
+            color: var(--warning);
+        }
+
+        .room-details {
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .detail-item i {
+            color: var(--primary);
+            width: 20px;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            min-width: 120px;
+        }
+
+        .detail-value {
+            color: var(--text-light);
+        }
+
+        .doctor-name, .nurse-name {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .cleaning-status {
+            background: var(--primary-light);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+        }
+
+        .cleaning-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .cleaning-title {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .cleaning-timer {
+            font-weight: 600;
+            color: var(--warning);
+        }
+
+        .cleaning-bar {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .cleaning-progress {
+            height: 100%;
+            background: var(--warning);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        /* Stats Overview */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .stat-icon.blue {
+            background: var(--primary);
+        }
+
+        .stat-icon.green {
+            background: var(--secondary);
+        }
+
+        .stat-icon.orange {
+            background: var(--warning);
+        }
+
+        .stat-info {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .rooms-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+            
+            .sidebar-menu span {
+                display: none;
+            }
+            
+            .sidebar-header h2 span {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+            }
+            
+            .rooms-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-hospital-alt"></i> <span>MediCare System</span></h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+            <li><a href="appointment.html"><i class="fas fa-calendar-check"></i> <span>Appointments</span></a></li>
+            <li><a href="doctor.html"><i class="fas fa-user-md"></i> <span>Doctors</span></a></li>
+            <li><a href="department.html" class="active"><i class="fas fa-building"></i> <span>Departments</span></a></li>
+            <li><a href="paitent.html"><i class="fas fa-procedures"></i> <span>Patients</span></a></li>
+            <li><a href="payment.html"><i class="fas fa-credit-card"></i> <span>Payments</span></a></li>
+            <li><a href="report.html"><i class="fas fa-chart-bar"></i> <span>Reports</span></a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+            <li><a href="help.html"><i class="fas fa-question-circle"></i> <span>Help</span></a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Department Rooms</h1>
+            <div class="user-info">
+                <div class="user-avatar">JD</div>
+                <div>
+                    <div class="user-name">Dr. John Doe</div>
+                    <div class="user-role">Administrator</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <i class="fas fa-door-open"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value">40</div>
+                    <div class="stat-label">Total Rooms</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value">28</div>
+                    <div class="stat-label">Available Rooms</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">Under Maintenance</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search by room name, doctor, or department...">
+            </div>
+            <button class="reset-btn" id="resetBtn">
+                <i class="fas fa-redo"></i> Reset
+            </button>
+        </div>
+
+        <!-- Department Filter -->
+        <div class="department-filter">
+            <button class="filter-btn active" data-department="all">All Departments</button>
+            <button class="filter-btn" data-department="cardiology">Cardiology</button>
+            <button class="filter-btn" data-department="neurology">Neurology</button>
+            <button class="filter-btn" data-department="orthopedics">Orthopedics</button>
+            <button class="filter-btn" data-department="pediatrics">Pediatrics</button>
+            <button class="filter-btn" data-department="dermatology">Dermatology</button>
+            <button class="filter-btn" data-department="ophthalmology">Ophthalmology</button>
+            <button class="filter-btn" data-department="gynecology">Gynecology</button>
+            <button class="filter-btn" data-department="ent">ENT</button>
+            <button class="filter-btn" data-department="gastroenterology">Gastroenterology</button>
+            <button class="filter-btn" data-department="urology">Urology</button>
+            <button class="filter-btn" data-department="psychiatry">Psychiatry</button>
+            <button class="filter-btn" data-department="oncology">Oncology</button>
+            <button class="filter-btn" data-department="nephrology">Nephrology</button>
+            <button class="filter-btn" data-department="endocrinology">Endocrinology</button>
+            <button class="filter-btn" data-department="pulmonology">Pulmonology</button>
+            <button class="filter-btn" data-department="rheumatology">Rheumatology</button>
+            <button class="filter-btn" data-department="hematology">Hematology</button>
+            <button class="filter-btn" data-department="general-surgery">General Surgery</button>
+            <button class="filter-btn" data-department="anesthesiology">Anesthesiology</button>
+            <button class="filter-btn" data-department="radiology">Radiology</button>
+        </div>
+
+        <!-- Rooms Grid -->
+        <div class="rooms-grid" id="roomsContainer">
+            <!-- Room cards will be generated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Sample data for rooms (40 rooms across 20 departments)
+        const roomsData = [
+            // Cardiology (2 rooms)
+            {
+                id: 1,
+                name: "Cardio Room 101",
+                department: "cardiology",
+                status: "available",
+                capacity: 4,
+                patients: 2,
+                doctor: "Dr. Sarah Johnson",
+                nurse: "Nurse Emily Wilson",
+                lastCleaned: "08:00",
+                nextCleaning: "16:00"
+            },
+            {
+                id: 2,
+                name: "Cardio Room 102",
+                department: "cardiology",
+                status: "occupied",
+                capacity: 2,
+                patients: 2,
+                doctor: "Dr. Michael Chen",
+                nurse: "Nurse Robert Garcia",
+                lastCleaned: "06:00",
+                nextCleaning: "14:00"
+            },
+            // Neurology (2 rooms)
+            {
+                id: 3,
+                name: "Neuro Room 201",
+                department: "neurology",
+                status: "available",
+                capacity: 3,
+                patients: 1,
+                doctor: "Dr. Lisa Patel",
+                nurse: "Nurse Jennifer Lee",
+                lastCleaned: "10:00",
+                nextCleaning: "18:00"
+            },
+            {
+                id: 4,
+                name: "Neuro Room 202",
+                department: "neurology",
+                status: "available",
+                capacity: 4,
+                patients: 0,
+                doctor: "Dr. Kevin Brown",
+                nurse: "Nurse Amanda Taylor",
+                lastCleaned: "12:00",
+                nextCleaning: "20:00"
+            },
+            // Orthopedics (2 rooms)
+            {
+                id: 5,
+                name: "Ortho Room 301",
+                department: "orthopedics",
+                status: "occupied",
+                capacity: 2,
+                patients: 2,
+                doctor: "Dr. James Wilson",
+                nurse: "Nurse Olivia Martinez",
+                lastCleaned: "04:00",
+                nextCleaning: "12:00"
+            },
+            {
+                id: 6,
+                name: "Ortho Room 302",
+                department: "orthopedics",
+                status: "available",
+                capacity: 3,
+                patients: 1,
+                doctor: "Dr. Rachel Kim",
+                nurse: "Nurse Daniel White",
+                lastCleaned: "08:00",
+                nextCleaning: "16:00"
+            },
+            // Pediatrics (2 rooms)
+            {
+                id: 7,
+                name: "Peds Room 401",
+                department: "pediatrics",
+                status: "available",
+                capacity: 4,
+                patients: 2,
+                doctor: "Dr. Maria Rodriguez",
+                nurse: "Nurse Sophia Clark",
+                lastCleaned: "06:00",
+                nextCleaning: "14:00"
+            },
+            {
+                id: 8,
+                name: "Peds Room 402",
+                department: "pediatrics",
+                status: "occupied",
+                capacity: 2,
+                patients: 2,
+                doctor: "Dr. Thomas Anderson",
+                nurse: "Nurse William Davis",
+                lastCleaned: "10:00",
+                nextCleaning: "18:00"
+            },
+            // Dermatology (2 rooms)
+            {
+                id: 9,
+                name: "Derm Room 501",
+                department: "dermatology",
+                status: "available",
+                capacity: 2,
+                patients: 1,
+                doctor: "Dr. Angela Moore",
+                nurse: "Nurse Chloe Harris",
+                lastCleaned: "09:00",
+                nextCleaning: "17:00"
+            },
+            {
+                id: 10,
+                name: "Derm Room 502",
+                department: "dermatology",
+                status: "maintenance",
+                capacity: 2,
+                patients: 0,
+                doctor: "Dr. Brian Thompson",
+                nurse: "Nurse Lucas Martin",
+                lastCleaned: "07:00",
+                nextCleaning: "15:00"
+            },
+            // Ophthalmology (2 rooms)
+            {
+                id: 11,
+                name: "Ophth Room 601",
+                department: "ophthalmology",
+                status: "available",
+                capacity: 3,
+                patients: 1,
+                doctor: "Dr. Natalie Scott",
+                nurse: "Nurse Grace Lewis",
+                lastCleaned: "11:00",
+                nextCleaning: "19:00"
+            },
+            {
+                id: 12,
+                name: "Ophth Room 602",
+                department: "ophthalmology",
+                status: "occupied",
+                capacity: 2,
+                patients: 2,
+                doctor: "Dr. Samuel Walker",
+                nurse: "Nurse Henry Hall",
+                lastCleaned: "05:00",
+                nextCleaning: "13:00"
+            },
+            // Gynecology (2 rooms)
+            {
+                id: 13,
+                name: "Gyno Room 701",
+                department: "gynecology",
+                status: "available",
+                capacity: 3,
+                patients: 1,
+                doctor: "Dr. Jessica Allen",
+                nurse: "Nurse Lily Young",
+                lastCleaned: "10:00",
+                nextCleaning: "18:00"
+            },
+            {
+                id: 14,
+                name: "Gyno Room 702",
+                department: "gynecology",
+                status: "occupied",
+                capacity: 2,
+                patients: 2,
+                doctor: "Dr. Benjamin King",
+                nurse: "Nurse Zoe Wright",
+                lastCleaned: "08:00",
+                nextCleaning: "16:00"
+            },
+            // ENT (2 rooms)
+            {
+                id: 15,
+                name: "ENT Room 801",
+                department: "ent",
+                status: "available",
+                capacity: 2,
+                patients: 0,
+                doctor: "Dr. Victoria Green",
+                nurse: "Nurse Jack Adams",
+                lastCleaned: "12:00",
+                nextCleaning: "20:00"
+            },
+            {
+                id: 16,
+                name: "ENT Room 802",
+                department: "ent",
+                status: "occupied",
+                capacity: 3,
+                patients: 3,
+                doctor: "Dr. Christopher Baker",
+                nurse: "Nurse Evelyn Nelson",
+                lastCleaned: "06:00",
+                nextCleaning: "14:00"
+            },
+            // Gastroenterology (2 rooms)
+            {
+                id: 17,
+                name: "Gastro Room 901",
+                department: "gastroenterology",
+                status: "available",
+                capacity: 2,
+                patients: 1,
+                doctor: "Dr. Samantha Hill",
+                nurse: "Nurse Mason Carter",
+                lastCleaned: "09:00",
+                nextCleaning: "17:00"
+            },
+            {
+                id: 18,
+                name: "Gastro Room 902",
+                department: "gastroenterology",
+                status: "maintenance",
+                capacity: 3,
+                patients: 0,
+                doctor: "Dr. Andrew Mitchell",
+                nurse: "Nurse Harper Perez",
+                lastCleaned: "07:00",
+                nextCleaning: "15:00"
+            },
+            // Urology (2 rooms)
+            {
+                id: 19,
+                name: "Uro Room 1001",
+                department: "urology",
+                status: "available",
+                capacity: 2,
+                patients: 0,
+                doctor: "Dr. Lauren Roberts",
+                nurse: "Nurse Levi Turner",
+                lastCleaned: "11:00",
+                nextCleaning: "19:00"
+            },
+            {
+                id: 20,
+                name: "Uro Room 1002",
+                department: "urology",
+                status: "occupied",
+                capacity: 3,
+                patients: 2,
+                doctor: "Dr. Joshua Phillips",
+                nurse: "Nurse Stella Campbell",
+                lastCleaned: "05:00",
+                nextCleaning: "13:00"
+            },
+            // Psychiatry (2 rooms)
+            {
+                id: 21,
+                name: "Psych Room 1101",
+                department: "psychiatry",
+                status: "available",
+                capacity: 1,
+                patients: 0,
+                doctor: "Dr. Michelle Evans",
+                nurse: "Nurse Wyatt Parker",
+                lastCleaned: "10:00",
+                nextCleaning: "18:00"
+            },
+            {
+                id: 22,
+                name: "Psych Room 1102",
+                department: "psychiatry",
+                status: "occupied",
+                capacity: 1,
+                patients: 1,
+                doctor: "Dr. Justin Collins",
+                nurse: "Nurse Violet Edwards",
+                lastCleaned: "08:00",
+                nextCleaning: "16:00"
+            },
+            // Oncology (2 rooms)
+            {
+                id: 23,
+                name: "Onco Room 1201",
+                department: "oncology",
+                status: "available",
+                capacity: 2,
+                patients: 1,
+                doctor: "Dr. Danielle Stewart",
+                nurse: "Nurse Owen Flores",
+                lastCleaned: "12:00",
+                nextCleaning: "20:00"
+            },
+            {
+                id: 24,
+                name: "Onco Room 1202",
+                department: "oncology",
+                status: "occupied",
+                capacity: 3,
+                patients: 3,
+                doctor: "Dr. Brandon Morris",
+                nurse: "Nurse Penelope Nguyen",
+                lastCleaned: "06:00",
+                nextCleaning: "14:00"
+            },
+            // Nephrology (2 rooms)
+            {
+                id: 25,
+                name: "Nephro Room 1301",
+                department: "nephrology",
+                status: "available",
+                capacity: 2,
+                patients: 0,
+                doctor: "Dr. Amanda Murphy",
+                nurse: "Nurse Lincoln Rivera",
+                lastCleaned: "09:00",
+                nextCleaning: "17:00"
+            },
+            {
+                id: 26,
+                name: "Nephro Room 1302",
+                department: "nephrology",
+                status: "occupied",
+                capacity: 3,
+                patients: 2,
+                doctor: "Dr. Tyler Cook",
+                nurse: "Nurse Savannah Cooper",
+                lastCleaned: "07:00",
+                nextCleaning: "15:00"
+            },
+            // Endocrinology (2 rooms)
+            {
+                id: 27,
+                name: "Endo Room 1401",
+                department: "endocrinology",
+                status: "available",
+                capacity: 2,
+                patients: 1,
+                doctor: "Dr. Christina Rogers",
+                nurse: "Nurse Elias Morgan",
+                lastCleaned: "11:00",
+                nextCleaning: "19:00"
+            },
+            {
+                id: 28,
+                name: "Endo Room 1402",
+                department: "endocrinology",
+                status: "maintenance",
+                capacity: 2,
+                patients: 0,
+                doctor: "Dr. Jonathan Reed",
+                nurse: "Nurse Eleanor Bell",
+                lastCleaned: "05:00",
+                nextCleaning: "13:00"
+            },
+            // Pulmonology (2 rooms)
+            {
+                id: 29,
+                name: "Pulmo Room 1501",
+                department: "pulmonology",
+                status: "available",
+                capacity: 2,
+                patients: 0,
+                doctor: "Dr. Stephanie Bailey",
+                nurse: "Nurse Julian Gomez",
+                lastCleaned: "10:00",
+                nextCleaning: "18:00"
+            },
+            {
+                id: 30,
+                name: "Pulmo Room 1502",
+                department: "pulmonology",
+                status: "occupied",
+                capacity: 3,
+                patients: 3,
+                doctor: "Dr. Alexander Kelly",
+                nurse: "Nurse Hazel Howard",
+                lastCleaned: "08:00",
+                nextCleaning: "16:00"
+            },
+            // Rheumatology (2 rooms)
+            {
+                id: 31,
+                name: "Rheum Room 1601",
+                department: "rheumatology",
+                status: "available",
+                capacity: 2,
+                patients: 1,
+                doctor: "Dr. Nicole Ward",
+                nurse: "Nurse Miles Cox",
+                lastCleaned: "12:00",
+                nextCleaning: "20:00"
+            },
+            {
+                id: 32,
+                name: "Rheum Room 1602",
+                department: "rheumatology",
+                status: "occupied",
+                capacity: 2,
+                patients: 2,
+                doctor: "Dr. Aaron Richardson",
+                nurse: "Nurse Aurora Diaz",
+                lastCleaned: "06:00",
+                nextCleaning: "14:00"
+            },
+            // Hematology (2 rooms)
+            {
+                id: 33,
+                name: "Hema Room 1701",
+                department: "hematology",
+                status: "available",
+                capacity: 2,
+                patients: 0,
+                doctor: "Dr. Rebecca Wood",
+                nurse: "Nurse Ezra Long",
+                lastCleaned: "09:00",
+                nextCleaning: "17:00"
+            },
+            {
+                id: 34,
+                name: "Hema Room 1702",
+                department: "hematology",
+                status: "occupied",
+                capacity: 3,
+                patients: 2,
+                doctor: "Dr. Kyle Watson",
+                nurse: "Nurse Nova Foster",
+                lastCleaned: "07:00",
+                nextCleaning: "15:00"
+            },
+            // General Surgery (2 rooms)
+            {
+                id: 35,
+                name: "Surgery Room 1801",
+                department: "general-surgery",
+                status: "available",
+                capacity: 4,
+                patients: 1,
+                doctor: "Dr. Megan Brooks",
+                nurse: "Nurse Asher Price",
+                lastCleaned: "11:00",
+                nextCleaning: "19:00"
+            },
+            {
+                id: 36,
+                name: "Surgery Room 1802",
+                department: "general-surgery",
+                status: "maintenance",
+                capacity: 4,
+                patients: 0,
+                doctor: "Dr. Jacob Sanders",
+                nurse: "Nurse Luna Simmons",
+                lastCleaned: "05:00",
+                nextCleaning: "13:00"
+            },
+            // Anesthesiology (2 rooms)
+            {
+                id: 37,
+                name: "Anesthesia Room 1901",
+                department: "anesthesiology",
+                status: "available",
+                capacity: 2,
+                patients: 0,
+                doctor: "Dr. Olivia Barnes",
+                nurse: "Nurse Eli Ross",
+                lastCleaned: "10:00",
+                nextCleaning: "18:00"
+            },
+            {
+                id: 38,
+                name: "Anesthesia Room 1902",
+                department: "anesthesiology",
+                status: "occupied",
+                capacity: 2,
+                patients: 2,
+                doctor: "Dr. Nathan Henderson",
+                nurse: "Nurse Maya Coleman",
+                lastCleaned: "08:00",
+                nextCleaning: "16:00"
+            },
+            // Radiology (2 rooms)
+            {
+                id: 39,
+                name: "Radio Room 2001",
+                department: "radiology",
+                status: "available",
+                capacity: 1,
+                patients: 0,
+                doctor: "Dr. Hailey Jenkins",
+                nurse: "Nurse Kai Perry",
+                lastCleaned: "12:00",
+                nextCleaning: "20:00"
+            },
+            {
+                id: 40,
+                name: "Radio Room 2002",
+                department: "radiology",
+                status: "occupied",
+                capacity: 1,
+                patients: 1,
+                doctor: "Dr. Caleb Powell",
+                nurse: "Nurse Aria Hughes",
+                lastCleaned: "06:00",
+                nextCleaning: "14:00"
+            }
+        ];
+
+        // Function to render rooms based on selected department and search query
+        function renderRooms(department = 'all', searchQuery = '') {
+            const container = document.getElementById('roomsContainer');
+            container.innerHTML = '';
+            
+            let filteredRooms = roomsData;
+            
+            // Filter by department
+            if (department !== 'all') {
+                filteredRooms = filteredRooms.filter(room => room.department === department);
+            }
+            
+            // Filter by search query
+            if (searchQuery) {
+                const query = searchQuery.toLowerCase();
+                filteredRooms = filteredRooms.filter(room => 
+                    room.name.toLowerCase().includes(query) ||
+                    room.doctor.toLowerCase().includes(query) ||
+                    room.department.toLowerCase().includes(query)
+                );
+            }
+            
+            // Update stats
+            updateStats(filteredRooms);
+            
+            // Render room cards
+            filteredRooms.forEach(room => {
+                const roomCard = document.createElement('div');
+                roomCard.className = 'room-card';
+                
+                let statusClass, statusText;
+                if (room.status === 'available') {
+                    statusClass = 'status-available';
+                    statusText = 'Available';
+                } else if (room.status === 'occupied') {
+                    statusClass = 'status-occupied';
+                    statusText = 'Occupied';
+                } else {
+                    statusClass = 'status-maintenance';
+                    statusText = 'Maintenance';
+                }
+                
+                // Calculate time until next cleaning
+                const now = new Date();
+                const nextCleaning = new Date();
+                const [hours, minutes] = room.nextCleaning.split(':');
+                nextCleaning.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+                
+                if (nextCleaning < now) {
+                    nextCleaning.setDate(nextCleaning.getDate() + 1);
+                }
+                
+                const timeDiff = nextCleaning - now;
+                const hoursUntilCleaning = Math.floor(timeDiff / (1000 * 60 * 60));
+                const minutesUntilCleaning = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+                
+                // Calculate progress percentage for cleaning
+                const totalMinutesIn8Hours = 8 * 60;
+                const lastCleaningTime = new Date();
+                const [lastHours, lastMinutes] = room.lastCleaned.split(':');
+                lastCleaningTime.setHours(parseInt(lastHours), parseInt(lastMinutes), 0, 0);
+                
+                if (lastCleaningTime > now) {
+                    lastCleaningTime.setDate(lastCleaningTime.getDate() - 1);
+                }
+                
+                const minutesSinceLastCleaning = (now - lastCleaningTime) / (1000 * 60);
+                const progressPercentage = Math.min(100, (minutesSinceLastCleaning / totalMinutesIn8Hours) * 100);
+                
+                roomCard.innerHTML = `
+                    <div class="room-header">
+                        <div class="room-title">${room.name}</div>
+                        <div class="room-status ${statusClass}">${statusText}</div>
+                    </div>
+                    <div class="room-details">
+                        <div class="detail-item">
+                            <i class="fas fa-procedures"></i>
+                            <span class="detail-label">Patients:</span>
+                            <span class="detail-value">${room.patients} / ${room.capacity}</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-user-md"></i>
+                            <span class="detail-label">Doctor:</span>
+                            <span class="detail-value doctor-name">${room.doctor}</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-user-nurse"></i>
+                            <span class="detail-label">Nurse:</span>
+                            <span class="detail-value nurse-name">${room.nurse}</span>
+                        </div>
+                    </div>
+                    <div class="cleaning-status">
+                        <div class="cleaning-header">
+                            <div class="cleaning-title">Next Cleaning</div>
+                            <div class="cleaning-timer">${hoursUntilCleaning}h ${minutesUntilCleaning}m</div>
+                        </div>
+                        <div class="cleaning-bar">
+                            <div class="cleaning-progress" style="width: ${progressPercentage}%"></div>
+                        </div>
+                        <div class="detail-item" style="margin-top: 8px; margin-bottom: 0;">
+                            <i class="fas fa-clock"></i>
+                            <span class="detail-label">Last cleaned:</span>
+                            <span class="detail-value">${room.lastCleaned}</span>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(roomCard);
+            });
+        }
+
+        // Function to update stats
+        function updateStats(rooms) {
+            const totalRooms = rooms.length;
+            const availableRooms = rooms.filter(room => room.status === 'available').length;
+            const maintenanceRooms = rooms.filter(room => room.status === 'maintenance').length;
+            
+            // Update the stats cards
+            document.querySelector('.stat-card:nth-child(1) .stat-value').textContent = totalRooms;
+            document.querySelector('.stat-card:nth-child(2) .stat-value').textContent = availableRooms;
+            document.querySelector('.stat-card:nth-child(3) .stat-value').textContent = maintenanceRooms;
+        }
+
+        // Initialize the page with all rooms
+        document.addEventListener('DOMContentLoaded', () => {
+            renderRooms();
+            
+            // Add event listeners to filter buttons
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    button.classList.add('active');
+                    
+                    // Filter rooms by department
+                    const department = button.getAttribute('data-department');
+                    const searchQuery = document.getElementById('searchInput').value;
+                    renderRooms(department, searchQuery);
+                });
+            });
+            
+            // Add event listener to search input
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', () => {
+                const activeFilter = document.querySelector('.filter-btn.active');
+                const department = activeFilter ? activeFilter.getAttribute('data-department') : 'all';
+                const searchQuery = searchInput.value;
+                renderRooms(department, searchQuery);
+            });
+            
+            // Add event listener to reset button
+            const resetBtn = document.getElementById('resetBtn');
+            resetBtn.addEventListener('click', () => {
+                // Reset search input
+                searchInput.value = '';
+                
+                // Reset filter to "All Departments"
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                document.querySelector('.filter-btn[data-department="all"]').classList.add('active');
+                
+                // Render all rooms
+                renderRooms();
+            });
+            
+            // Update cleaning timers every minute
+            setInterval(() => {
+                const activeFilter = document.querySelector('.filter-btn.active');
+                const department = activeFilter ? activeFilter.getAttribute('data-department') : 'all';
+                const searchQuery = searchInput.value;
+                renderRooms(department, searchQuery);
+            }, 60000);
+        });
+    </script>
+</body>
+</html>

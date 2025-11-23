@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1565c0;
+            --primary-dark: #0d47a1;
+            --secondary: #4CAF50;
+            --accent: #f47abf;
+            --light: #e3f2fd;
+            --dark: #1a237e;
+            --text: #333;
+            --card-bg: #ffffff;
+            --sidebar-bg: #f8f9fa;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Top bar container */
+        .topbar {
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: slideDown 0.8s ease;
+        }
+
+        @keyframes slideDown {
+            0% { transform: translateY(-100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .title i {
+            font-size: 36px;
+            color: var(--secondary);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            transition: var(--transition);
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Layout wrapper */
+        .main-content {
+            display: flex;
+            align-items: flex-start;
+            padding: 30px;
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Sidebar */
+        .container {
+            padding: 25px;
+            background: var(--sidebar-bg);
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            width: 280px;
+            position: sticky;
+            top: 100px;
+            backdrop-filter: blur(10px);
+            animation: fadeInLeft 1s ease;
+        }
+
+        @keyframes fadeInLeft {
+            0% { opacity: 0; transform: translateX(-30px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .container h2 {
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 18px 0;
+            transition: var(--transition);
+        }
+
+        .container h2 a {
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        .container h2 a i {
+            font-size: 18px;
+            color: var(--primary);
+            width: 24px;
+            text-align: center;
+        }
+
+        .container h2 a:hover {
+            background: rgba(21, 101, 192, 0.1);
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .container h2 a.active {
+            background: rgba(21, 101, 192, 0.15);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .container hr {
+            border: none;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #ddd, transparent);
+            margin: 20px 0;
+        }
+
+        /* Dashboard Cards Area */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            flex: 1;
+            animation: fadeInUp 1s ease;
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border-top: 6px solid;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .pregnancy {
+            border-color: var(--accent);
+            animation: pulseGlow 3s infinite;
+        }
+
+        .heart {
+            border-color: #ff6b6b;
+            animation: heartbeat 2.5s infinite;
+        }
+
+        .neurology {
+            border-color: #6a5acd;
+            animation: pulseGlow 3.5s infinite;
+        }
+
+        .orthopedics {
+            border-color: #ffa500;
+            animation: pulseGlow 4s infinite;
+        }
+
+        .pediatrics {
+            border-color: #20b2aa;
+            animation: pulseGlow 3.2s infinite;
+        }
+
+        .dermatology {
+            border-color: #9370db;
+            animation: pulseGlow 3.8s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+            50% {
+                box-shadow: 0 0 25px currentColor;
+            }
+            100% {
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+        }
+
+        @keyframes heartbeat {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 10px rgba(255, 107, 107, 0.1);
+            }
+            25% {
+                transform: scale(1.02);
+                box-shadow: 0 0 25px rgba(255, 107, 107, 0.4);
+            }
+            40% {
+                transform: scale(1);
+                box-shadow: 0 0 10px rgba(255, 107, 107, 0.1);
+            }
+            60% {
+                transform: scale(1.02);
+                box-shadow: 0 0 25px rgba(255, 107, 107, 0.4);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 10px rgba(255, 107, 107, 0.1);
+            }
+        }
+
+        .card h2 {
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .card h2 i {
+            font-size: 26px;
+        }
+
+        .card p {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .stat {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            flex: 1;
+            margin: 0 5px;
+            transition: var(--transition);
+            border: 1px solid #eee;
+        }
+
+        .stat:hover {
+            background: #e9ecef;
+            transform: translateY(-5px);
+        }
+
+        .stat h3 {
+            color: var(--primary);
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .stat p {
+            margin: 5px 0 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .footer {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 40px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .container {
+                width: 100%;
+                max-width: 600px;
+                position: static;
+            }
+            
+            .dashboard {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .topbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .stat {
+                margin: 0;
+            }
+        }
+
+        /* Search bar */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        .search-bar {
+            display: flex;
+            background: white;
+            border-radius: 50px;
+            padding: 8px 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+            background: transparent;
+        }
+
+        .search-bar button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .search-bar button:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Welcome message */
+        .welcome {
+            text-align: center;
+            margin: 20px 0 30px;
+            animation: fadeIn 1.5s ease;
+        }
+
+        .welcome h2 {
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .welcome p {
+            font-size: 18px;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* No results message */
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 18px;
+            display: none;
+            grid-column: 1 / -1;
+        }
+
+        .no-results i {
+            font-size: 50px;
+            margin-bottom: 20px;
+            color: #ccc;
+        }
+
+        /* Search highlight */
+        .highlight {
+            background-color: yellow;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <h1 class="title"><i class="fas fa-heartbeat"></i> Healthcare Management System</h1>
+        <div class="nav-links">
+            <a href="paitent.html"><i class="fas fa-user-injured"></i> Patients</a>
+            <a href="appointment.html"><i class="fas fa-calendar-check"></i> Appointments</a>
+            <a href="doctor.html"><i class="fas fa-user-md"></i> Doctors</a>
+            <!-- <a href="/billing"><i class="fas fa-file-invoice-dollar"></i> Billing</a> -->
+            <a href="rooms.html"><i class="fas fa-file-invoice-dollar"></i> Rooms</a>
+        </div>
+    </div>
+
+    <!-- Welcome Section -->
+    <div class="welcome">
+        <h2>Welcome to Your Health Dashboard</h2>
+        <p>Monitor your health, track appointments, and access medical services all in one place</p>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search for services, doctors, or departments...">
+            <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
+        </div>
+    </div>
+
+    <!-- Main layout: Sidebar + Cards -->
+    <div class="main-content">
+        <!-- Sidebar -->
+        <div class="container">
+            <h2><a href="dashboard.html" class="active"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></h2>
+            <h2><a href="appointment.html"><i class="fa-regular fa-calendar-check"></i> Appointments</a></h2>
+            <h2><a href="doctor.html"><i class="fa-solid fa-user-doctor"></i> Doctors</a></h2>
+            <h2><a href="department.html"><i class="fa-solid fa-building"></i> Departments</a></h2>
+            <h2><a href="paitent.html"><i class="fa-solid fa-bed-pulse"></i> Patients</a></h2>
+            <h2><a href="payment.html"><i class="fa-solid fa-credit-card"></i> Payments</a></h2>
+            <h2><a href="report.html"><i class="fa-regular fa-file-lines"></i> Reports</a></h2>
+            <h2><a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a></h2>
+            <hr>
+            <h2><a href="help.html"><i class="fa-solid fa-circle-question"></i> Help & Support</a></h2>
+        </div>
+
+        <!-- Cards beside sidebar -->
+        <div class="dashboard" id="dashboard">
+            <div class="card pregnancy" data-department="Pregnancy Care" data-description="Track your pregnancy journey with our specialized care plans, weekly updates, and personalized guidance from our maternity experts.">
+                <h2><i class="fas fa-baby"></i> Pregnancy Care</h2>
+                <p>Track your pregnancy journey with our specialized care plans, weekly updates, and personalized guidance from our maternity experts.</p>
+                <div class="card-stats">
+                    <div class="stat">
+                        <h3>12</h3>
+                        <p>Weeks Pregnant</p>
+                    </div>
+                    <div class="stat">
+                        <h3>4</h3>
+                        <p>Appointments</p>
+                    </div>
+                    <div class="stat">
+                        <h3>28</h3>
+                        <p>Days to Next</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card heart" data-department="Cardiac Care" data-description="Monitor your heart health with our cardiac care specialists, advanced tracking tools, and personalized treatment plans.">
+                <h2><i class="fas fa-heart"></i> Cardiac Care</h2>
+                <p>Monitor your heart health with our cardiac care specialists, advanced tracking tools, and personalized treatment plans.</p>
+                <div class="card-stats">
+                    <div class="stat">
+                        <h3>72</h3>
+                        <p>BPM</p>
+                    </div>
+                    <div class="stat">
+                        <h3>120/80</h3>
+                        <p>Blood Pressure</p>
+                    </div>
+                    <div class="stat">
+                        <h3>98%</h3>
+                        <p>Oxygen Level</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card neurology" data-department="Neurology" data-description="Comprehensive neurological care with advanced diagnostics and treatment for brain and nervous system conditions.">
+                <h2><i class="fas fa-brain"></i> Neurology</h2>
+                <p>Comprehensive neurological care with advanced diagnostics and treatment for brain and nervous system conditions.</p>
+                <div class="card-stats">
+                    <div class="stat">
+                        <h3>5</h3>
+                        <p>Specialists</p>
+                    </div>
+                    <div class="stat">
+                        <h3>24/7</h3>
+                        <p>Emergency Care</p>
+                    </div>
+                    <div class="stat">
+                        <h3>96%</h3>
+                        <p>Success Rate</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card orthopedics" data-department="Orthopedics" data-description="Expert care for bones, joints, and muscles with advanced surgical and non-surgical treatment options.">
+                <h2><i class="fas fa-bone"></i> Orthopedics</h2>
+                <p>Expert care for bones, joints, and muscles with advanced surgical and non-surgical treatment options.</p>
+                <div class="card-stats">
+                    <div class="stat">
+                        <h3>8</h3>
+                        <p>Surgeons</p>
+                    </div>
+                    <div class="stat">
+                        <h3>150+</h3>
+                        <p>Procedures/Month</p>
+                    </div>
+                    <div class="stat">
+                        <h3>94%</h3>
+                        <p>Recovery Rate</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card pediatrics" data-department="Pediatrics" data-description="Comprehensive healthcare for children from infancy through adolescence with specialized pediatric care.">
+                <h2><i class="fas fa-child"></i> Pediatrics</h2>
+                <p>Comprehensive healthcare for children from infancy through adolescence with specialized pediatric care.</p>
+                <div class="card-stats">
+                    <div class="stat">
+                        <h3>12</h3>
+                        <p>Pediatricians</p>
+                    </div>
+                    <div class="stat">
+                        <h3>500+</h3>
+                        <p>Young Patients</p>
+                    </div>
+                    <div class="stat">
+                        <h3>99%</h3>
+                        <p>Parent Satisfaction</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card dermatology" data-department="Dermatology" data-description="Advanced skin care treatments for all dermatological conditions with cutting-edge technology and expert care.">
+                <h2><i class="fas fa-allergies"></i> Dermatology</h2>
+                <p>Advanced skin care treatments for all dermatological conditions with cutting-edge technology and expert care.</p>
+                <div class="card-stats">
+                    <div class="stat">
+                        <h3>6</h3>
+                        <p>Dermatologists</p>
+                    </div>
+                    <div class="stat">
+                        <h3>300+</h3>
+                        <p>Treatments/Month</p>
+                    </div>
+                    <div class="stat">
+                        <h3>97%</h3>
+                        <p>Patient Improvement</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- No results message -->
+            <div class="no-results" id="noResults">
+                <i class="fas fa-search"></i>
+                <h3>No departments found</h3>
+                <p>Try adjusting your search to find what you're looking for.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2023 Healthcare Management System | Providing Quality Care Since 2005</p>
+    </div>
+
+    <script>
+        // Add interactivity to cards
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('click', function() {
+                const department = this.querySelector('h2').textContent.trim();
+                alert(`You selected ${department}. This would navigate to the department details page.`);
+            });
+        });
+
+        // Add active state to sidebar links
+        document.querySelectorAll('.container h2 a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                document.querySelectorAll('.container h2 a').forEach(a => {
+                    a.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // In a real application, you would navigate to the page
+                // For demo, we'll prevent default only for non-active links
+                if (!this.getAttribute('href') || this.getAttribute('href') === '#') {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Search functionality - filter cards based on search query
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.card');
+            const noResults = document.getElementById('noResults');
+            let hasResults = false;
+            
+            if (query === '') {
+                // If search is empty, show all cards
+                cards.forEach(card => {
+                    card.style.display = 'block';
+                    // Remove any existing highlights
+                    const title = card.querySelector('h2');
+                    const description = card.querySelector('p');
+                    title.innerHTML = title.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/g, '$1');
+                    description.innerHTML = description.innerHTML.replace(/<span class="highlight">(.*?)<\/span>/g, '$1');
+                });
+                noResults.style.display = 'none';
+                return;
+            }
+            
+            cards.forEach(card => {
+                const department = card.getAttribute('data-department').toLowerCase();
+                const description = card.getAttribute('data-description').toLowerCase();
+                
+                // Check if query matches department name or description
+                if (department.includes(query) || description.includes(query)) {
+                    card.style.display = 'block';
+                    hasResults = true;
+                    
+                    // Highlight matching text in the card
+                    const title = card.querySelector('h2');
+                    const desc = card.querySelector('p');
+                    
+                    // Highlight in title
+                    const titleText = title.textContent;
+                    const regex = new RegExp(`(${query})`, 'gi');
+                    title.innerHTML = titleText.replace(regex, '<span class="highlight">$1</span>');
+                    
+                    // Highlight in description
+                    const descText = desc.textContent;
+                    desc.innerHTML = descText.replace(regex, '<span class="highlight">$1</span>');
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Show no results message if no cards match
+            noResults.style.display = hasResults ? 'none' : 'block';
+        }
+
+        // Add event listeners for search
+        document.getElementById('searchBtn').addEventListener('click', performSearch);
+        
+        // Allow Enter key to trigger search
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Clear search when input is cleared
+        document.getElementById('searchInput').addEventListener('input', function() {
+            if (this.value.trim() === '') {
+                performSearch();
+            }
+        });
+    </script>
+</body>
+</html>

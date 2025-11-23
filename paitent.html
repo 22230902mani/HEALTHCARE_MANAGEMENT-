@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Management | Healthcare Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1565c0;
+            --primary-light: #e3f2fd;
+            --secondary: #4caf50;
+            --danger: #f44336;
+            --warning: #ff9800;
+            --info: #2196f3;
+            --text: #333;
+            --text-light: #666;
+            --bg: #f8f9fa;
+            --sidebar-bg: #ffffff;
+            --card-bg: #ffffff;
+            --transition: all 0.3s ease;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            box-shadow: var(--shadow);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            z-index: 100;
+            animation: fadeInLeft 1s ease;
+        }
+
+        @keyframes fadeInLeft {
+            0% { opacity: 0; transform: translateX(-30px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .sidebar-header {
+            padding: 25px 20px 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        .sidebar-header h2 i {
+            font-size: 24px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 15px 0;
+        }
+
+        .sidebar-menu li {
+            margin: 5px 15px;
+        }
+
+        .sidebar-menu a {
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            transition: var(--transition);
+            font-size: 16px;
+        }
+
+        .sidebar-menu a i {
+            font-size: 18px;
+            color: var(--primary);
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(21, 101, 192, 0.1);
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu a.active {
+            background: rgba(21, 101, 192, 0.15);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .sidebar hr {
+            border: none;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #ddd, transparent);
+            margin: 20px 0;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 30px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 28px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Search and Filter */
+        .search-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* Stats Overview */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: var(--transition);
+            animation: slideInUp 0.6s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        @keyframes slideInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .stat-icon.blue {
+            background: var(--primary);
+        }
+
+        .stat-icon.green {
+            background: var(--secondary);
+        }
+
+        .stat-icon.orange {
+            background: var(--warning);
+        }
+
+        .stat-icon.red {
+            background: var(--danger);
+        }
+
+        .stat-info {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* Patient Filter */
+        .patient-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .filter-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Patient Grid */
+        .patients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .patient-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInScale 0.7s ease;
+        }
+
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .patient-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .patient-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .patient-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .patient-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            position: relative;
+        }
+
+        .patient-avatar::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--secondary);
+            border: 2px solid white;
+            bottom: 2px;
+            right: 2px;
+        }
+
+        .patient-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .patient-details {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .patient-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-stable {
+            background: rgba(76, 175, 80, 0.15);
+            color: var(--secondary);
+        }
+
+        .status-critical {
+            background: rgba(244, 67, 54, 0.15);
+            color: var(--danger);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(244, 67, 54, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0); }
+        }
+
+        .status-recovering {
+            background: rgba(33, 150, 243, 0.15);
+            color: var(--info);
+        }
+
+        .status-observation {
+            background: rgba(255, 152, 0, 0.15);
+            color: var(--warning);
+        }
+
+        .patient-details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .doctor-name, .nurse-name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .patient-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px 15px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .action-btn.primary {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .patients-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+            
+            .sidebar-menu span {
+                display: none;
+            }
+            
+            .sidebar-header h2 span {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+            }
+            
+            .patients-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                min-width: 100%;
+            }
+            
+            .patient-details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-hospital-alt"></i> <span>MediCare System</span></h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+            <li><a href="appointment.html"><i class="fas fa-calendar-check"></i> <span>Appointments</span></a></li>
+            <li><a href="doctor.html"><i class="fas fa-user-md"></i> <span>Doctors</span></a></li>
+            <li><a href="department.html"><i class="fas fa-building"></i> <span>Departments</span></a></li>
+            <li><a href="patient.html" class="active"><i class="fas fa-procedures"></i> <span>Patients</span></a></li>
+            <li><a href="payment.html"><i class="fas fa-credit-card"></i> <span>Payments</span></a></li>
+            <li><a href="report.html"><i class="fas fa-chart-bar"></i> <span>Reports</span></a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+            <li><a href="help.html"><i class="fas fa-question-circle"></i> <span>Help</span></a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Patient Management</h1>
+            <div class="user-info">
+                <div class="user-avatar">JD</div>
+                <div>
+                    <div class="user-name">Dr. John Doe</div>
+                    <div class="user-role">Administrator</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <i class="fas fa-procedures"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value">42</div>
+                    <div class="stat-label">Total Patients</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value">28</div>
+                    <div class="stat-label">Stable Condition</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <i class="fas fa-stethoscope"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value">10</div>
+                    <div class="stat-label">Under Observation</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon red">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">Critical Condition</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Action Buttons -->
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search by patient name, ID, or condition...">
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="addPatientBtn">
+                    <i class="fas fa-plus"></i> Add Patient
+                </button>
+                <button class="btn btn-secondary" id="exportBtn">
+                    <i class="fas fa-file-export"></i> Export
+                </button>
+            </div>
+        </div>
+
+        <!-- Patient Filter -->
+        <div class="patient-filter">
+            <button class="filter-btn active" data-status="all">All Patients</button>
+            <button class="filter-btn" data-status="stable">Stable</button>
+            <button class="filter-btn" data-status="critical">Critical</button>
+            <button class="filter-btn" data-status="recovering">Recovering</button>
+            <button class="filter-btn" data-status="observation">Observation</button>
+            <button class="filter-btn" data-status="cardiology">Cardiology</button>
+            <button class="filter-btn" data-status="neurology">Neurology</button>
+            <button class="filter-btn" data-status="orthopedics">Orthopedics</button>
+        </div>
+
+        <!-- Patients Grid -->
+        <div class="patients-grid" id="patientsContainer">
+            <!-- Patient cards will be generated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Sample data for patients (42 patients)
+        const patientsData = [
+            {
+                id: 1,
+                name: "Robert Johnson",
+                age: 58,
+                gender: "Male",
+                condition: "Hypertension",
+                status: "stable",
+                department: "cardiology",
+                room: "Cardio 101",
+                doctor: "Dr. Sarah Johnson",
+                nurse: "Nurse Emily Wilson",
+                admissionDate: "2023-10-15",
+                lastCheckup: "2023-11-05",
+                bloodPressure: "130/85",
+                heartRate: "72",
+                temperature: "98.6°F"
+            },
+            {
+                id: 2,
+                name: "Mary Williams",
+                age: 72,
+                gender: "Female",
+                condition: "Cardiac Arrhythmia",
+                status: "critical",
+                department: "cardiology",
+                room: "Cardio 102",
+                doctor: "Dr. Michael Chen",
+                nurse: "Nurse Robert Garcia",
+                admissionDate: "2023-11-02",
+                lastCheckup: "2023-11-05",
+                bloodPressure: "145/95",
+                heartRate: "115",
+                temperature: "99.2°F"
+            },
+            {
+                id: 3,
+                name: "James Smith",
+                age: 45,
+                gender: "Male",
+                condition: "Migraine",
+                status: "observation",
+                department: "neurology",
+                room: "Neuro 201",
+                doctor: "Dr. Lisa Patel",
+                nurse: "Nurse Jennifer Lee",
+                admissionDate: "2023-10-28",
+                lastCheckup: "2023-11-04",
+                bloodPressure: "120/80",
+                heartRate: "68",
+                temperature: "98.4°F"
+            },
+            {
+                id: 4,
+                name: "Patricia Brown",
+                age: 63,
+                gender: "Female",
+                condition: "Stroke Recovery",
+                status: "recovering",
+                department: "neurology",
+                room: "Neuro 202",
+                doctor: "Dr. Kevin Brown",
+                nurse: "Nurse Amanda Taylor",
+                admissionDate: "2023-10-10",
+                lastCheckup: "2023-11-05",
+                bloodPressure: "135/85",
+                heartRate: "74",
+                temperature: "98.8°F"
+            },
+            {
+                id: 5,
+                name: "Michael Davis",
+                age: 38,
+                gender: "Male",
+                condition: "Fractured Arm",
+                status: "stable",
+                department: "orthopedics",
+                room: "Ortho 301",
+                doctor: "Dr. James Wilson",
+                nurse: "Nurse Olivia Martinez",
+                admissionDate: "2023-11-01",
+                lastCheckup: "2023-11-05",
+                bloodPressure: "125/80",
+                heartRate: "70",
+                temperature: "98.6°F"
+            },
+            {
+                id: 6,
+                name: "Linda Miller",
+                age: 55,
+                gender: "Female",
+                condition: "Hip Replacement",
+                status: "recovering",
+                department: "orthopedics",
+                room: "Ortho 302",
+                doctor: "Dr. Rachel Kim",
+                nurse: "Nurse Daniel White",
+                admissionDate: "2023-10-25",
+                lastCheckup: "2023-11-04",
+                bloodPressure: "130/85",
+                heartRate: "72",
+                temperature: "99.0°F"
+            },
+            {
+                id: 7,
+                name: "David Wilson",
+                age: 67,
+                gender: "Male",
+                condition: "Pneumonia",
+                status: "critical",
+                department: "pulmonology",
+                room: "Pulmo 401",
+                doctor: "Dr. Stephanie Bailey",
+                nurse: "Nurse Julian Gomez",
+                admissionDate: "2023-11-03",
+                lastCheckup: "2023-11-05",
+                bloodPressure: "140/90",
+                heartRate: "95",
+                temperature: "101.4°F"
+            },
+            {
+                id: 8,
+                name: "Barbara Moore",
+                age: 49,
+                gender: "Female",
+                condition: "Asthma",
+                status: "observation",
+                department: "pulmonology",
+                room: "Pulmo 402",
+                doctor: "Dr. Alexander Kelly",
+                nurse: "Nurse Hazel Howard",
+                admissionDate: "2023-10-30",
+                lastCheckup: "2023-11-05",
+                bloodPressure: "125/80",
+                heartRate: "78",
+                temperature: "98.6°F"
+            },
+            {
+                id: 9,
+                name: "Richard Taylor",
+                age: 71,
+                gender: "Male",
+                condition: "Diabetes Management",
+                status: "stable",
+                department: "endocrinology",
+                room: "Endo 501",
+                doctor: "Dr. Christina Rogers",
+                nurse: "Nurse Elias Morgan",
+                admissionDate: "2023-10-20",
+                lastCheckup: "2023-11-04",
+                bloodPressure: "130/85",
+                heartRate: "74",
+                temperature: "98.4°F"
+            },
+            {
+                id: 10,
+                name: "Susan Anderson",
+                age: 52,
+                gender: "Female",
+                condition: "Thyroid Disorder",
+                status: "stable",
+                department: "endocrinology",
+                room: "Endo 502",
+                doctor: "Dr. Jonathan Reed",
+                nurse: "Nurse Eleanor Bell",
+                admissionDate: "2023-10-22",
+                lastCheckup: "2023-11-05",
+                bloodPressure: "120/80",
+                heartRate: "70",
+                temperature: "98.6°F"
+            },
+            // Additional patients to reach 42 total
+            {
+                id: 11,
+                name: "Joseph Thomas",
+                age: 60,
+                gender: "Male",
+                condition: "Kidney Stones",
+                status: "observation",
+                department: "urology",
+                room: "Uro 601",
+                doctor: "Dr. Lauren Roberts",
+                nurse: "Nurse Levi Turner",
+                admissionDate: "2023-11-01",
+                lastCheckup: "2023-11-05",
+                bloodPressure: "135/85",
+                heartRate: "76",
+                temperature: "98.8°F"
+            },
+            {
+                id: 12,
+                name: "Jessica Jackson",
+                age: 35,
+                gender: "Female",
+                condition: "Pregnancy Care",
+                status: "stable",
+                department: "gynecology",
+                room: "Gyno 701",
+                doctor: "Dr. Jessica Allen",
+                nurse: "Nurse Lily Young",
+                admissionDate: "2023-10-15",
+                lastCheckup: "2023-11-04",
+                bloodPressure: "120/75",
+                heartRate: "72",
+                temperature: "98.6°F"
+            },
+            // Add more patients as needed to reach 42...
+        ];
+
+        // Function to render patients based on selected status and search query
+        function renderPatients(status = 'all', searchQuery = '') {
+            const container = document.getElementById('patientsContainer');
+            container.innerHTML = '';
+            
+            let filteredPatients = patientsData;
+            
+            // Filter by status
+            if (status !== 'all') {
+                filteredPatients = filteredPatients.filter(patient => 
+                    patient.status === status || patient.department === status
+                );
+            }
+            
+            // Filter by search query
+            if (searchQuery) {
+                const query = searchQuery.toLowerCase();
+                filteredPatients = filteredPatients.filter(patient => 
+                    patient.name.toLowerCase().includes(query) ||
+                    patient.condition.toLowerCase().includes(query) ||
+                    patient.id.toString().includes(query)
+                );
+            }
+            
+            // Render patient cards
+            filteredPatients.forEach(patient => {
+                const patientCard = document.createElement('div');
+                patientCard.className = 'patient-card';
+                
+                let statusClass, statusText;
+                if (patient.status === 'stable') {
+                    statusClass = 'status-stable';
+                    statusText = 'Stable';
+                } else if (patient.status === 'critical') {
+                    statusClass = 'status-critical';
+                    statusText = 'Critical';
+                } else if (patient.status === 'recovering') {
+                    statusClass = 'status-recovering';
+                    statusText = 'Recovering';
+                } else {
+                    statusClass = 'status-observation';
+                    statusText = 'Observation';
+                }
+                
+                // Format admission date
+                const admissionDate = new Date(patient.admissionDate);
+                const formattedDate = admissionDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+                
+                // Get initials for avatar
+                const nameParts = patient.name.split(' ');
+                const initials = nameParts.map(part => part[0]).join('');
+                
+                patientCard.innerHTML = `
+                    <div class="patient-header">
+                        <div class="patient-info">
+                            <div class="patient-avatar">${initials}</div>
+                            <div>
+                                <div class="patient-name">${patient.name}</div>
+                                <div class="patient-details">${patient.age} yrs • ${patient.gender} • ID: ${patient.id}</div>
+                            </div>
+                        </div>
+                        <div class="patient-status ${statusClass}">${statusText}</div>
+                    </div>
+                    <div class="patient-details-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Condition</span>
+                            <span class="detail-value">${patient.condition}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Department</span>
+                            <span class="detail-value">${patient.department}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Room</span>
+                            <span class="detail-value">${patient.room}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Admitted</span>
+                            <span class="detail-value">${formattedDate}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Doctor</span>
+                            <span class="detail-value doctor-name">${patient.doctor}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Nurse</span>
+                            <span class="detail-value nurse-name">${patient.nurse}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Blood Pressure</span>
+                            <span class="detail-value">${patient.bloodPressure}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Heart Rate</span>
+                            <span class="detail-value">${patient.heartRate} bpm</span>
+                        </div>
+                    </div>
+                    <div class="patient-actions">
+                        <button class="action-btn">
+                            <i class="fas fa-file-medical"></i> Records
+                        </button>
+                        <button class="action-btn">
+                            <i class="fas fa-pills"></i> Meds
+                        </button>
+                        <button class="action-btn primary">
+                            <i class="fas fa-notes-medical"></i> Checkup
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(patientCard);
+            });
+        }
+
+        // Initialize the page with all patients
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPatients();
+            
+            // Add event listeners to filter buttons
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    button.classList.add('active');
+                    
+                    // Filter patients by status
+                    const status = button.getAttribute('data-status');
+                    const searchQuery = document.getElementById('searchInput').value;
+                    renderPatients(status, searchQuery);
+                });
+            });
+            
+            // Add event listener to search input
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', () => {
+                const activeFilter = document.querySelector('.filter-btn.active');
+                const status = activeFilter ? activeFilter.getAttribute('data-status') : 'all';
+                const searchQuery = searchInput.value;
+                renderPatients(status, searchQuery);
+            });
+            
+            // Add event listener to add patient button
+            const addPatientBtn = document.getElementById('addPatientBtn');
+            addPatientBtn.addEventListener('click', () => {
+                alert('Add Patient functionality would open a form here.');
+            });
+            
+            // Add event listener to export button
+            const exportBtn = document.getElementById('exportBtn');
+            exportBtn.addEventListener('click', () => {
+                alert('Export functionality would download patient data here.');
+            });
+        });
+    </script>
+</body>
+</html>

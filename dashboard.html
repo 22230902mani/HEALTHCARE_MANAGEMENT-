@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthCare Pro - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #1565c0;
+            --primary-dark: #0d47a1;
+            --secondary: #4CAF50;
+            --accent: #f47abf;
+            --light: #e3f2fd;
+            --dark: #1a237e;
+            --text: #333;
+            --card-bg: #ffffff;
+            --sidebar-bg: #f8f9fa;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --gradient-primary: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+            --gradient-secondary: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            --gradient-accent: linear-gradient(135deg, #f47abf 0%, #e91e63 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            grid-template-rows: auto 1fr auto;
+            min-height: 100vh;
+        }
+
+        .home-btn {
+            background: var(--gradient-secondary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+            margin-right: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Header Styles */
+        header {
+            grid-column: 1 / -1;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideDown 0.8s ease;
+        }
+
+        @keyframes slideDown {
+            0% { transform: translateY(-100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: var(--secondary);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .header-info {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .emergency-alert {
+            background: var(--gradient-accent);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background: white;
+            padding: 1.5rem 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            height: 100%;
+            border-radius: 0 20px 20px 0;
+            animation: fadeInLeft 1s ease;
+        }
+
+        @keyframes fadeInLeft {
+            0% { opacity: 0; transform: translateX(-30px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem 1.5rem;
+            color: var(--dark);
+            text-decoration: none;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(21, 101, 192, 0.1);
+            border-left: 4px solid var(--primary);
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu i {
+            width: 20px;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        /* Dashboard Main Content */
+        .dashboard {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            grid-auto-rows: minmax(150px, auto);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            cursor: pointer;
+            border-top: 6px solid;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-header h2 {
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+
+        .card-header i {
+            color: var(--secondary);
+            font-size: 1.5rem;
+        }
+
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: var(--light);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: #e1f5fe;
+        }
+
+        .stat-card.patients {
+            border-left-color: var(--primary);
+        }
+
+        .stat-card.doctors {
+            border-left-color: var(--success);
+        }
+
+        .stat-card.appointments {
+            border-left-color: var(--warning);
+        }
+
+        .stat-card.revenue {
+            border-left-color: var(--secondary);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .stat-change {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .positive {
+            color: var(--success);
+        }
+
+        .negative {
+            color: #e74c3c;
+        }
+
+        /* Charts */
+        .chart-container {
+            height: 250px;
+            margin-top: 1rem;
+            position: relative;
+        }
+
+        .chart-container canvas {
+            border-radius: 8px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .half-width {
+            grid-column: span 1;
+        }
+
+        /* Appointments Table */
+        .appointments-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .appointments-table th, .appointments-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .appointments-table th {
+            background: var(--light);
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .appointments-table tr:hover {
+            background: rgba(21, 101, 192, 0.05);
+        }
+
+        .status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status.confirmed {
+            background: rgba(76, 175, 80, 0.2);
+            color: var(--success);
+        }
+
+        .status.pending {
+            background: rgba(255, 152, 0, 0.2);
+            color: #ff9800;
+        }
+
+        .status.cancelled {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        /* Activity Feed */
+        .activity-feed {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+            transition: var(--transition);
+        }
+
+        .activity-item:hover {
+            background: rgba(21, 101, 192, 0.05);
+            border-radius: 8px;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            transition: var(--transition);
+        }
+
+        .activity-item:hover .activity-icon {
+            transform: scale(1.1);
+            background: var(--primary);
+            color: white;
+        }
+
+        .activity-content h4 {
+            margin-bottom: 0.3rem;
+            font-size: 1rem;
+        }
+
+        .activity-content p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .activity-time {
+            color: #95a5a6;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+
+        /* Footer Styles */
+        footer {
+            grid-column: 1 / -1;
+            background: var(--dark);
+            color: white;
+            padding: 1.5rem 2rem;
+            text-align: center;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .full-width {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-info {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+
+        /* Half-width charts (side by side) */
+        .half-width {
+            width: 48%;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .dashboard .half-width {
+            min-width: 350px;
+        }
+
+        @media (max-width: 900px) {
+            .half-width {
+                width: 100%;
+                display: block;
+            }
+        }
+
+        /* Animation for cards */
+        @keyframes cardSlideIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            animation: cardSlideIn 0.5s ease;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <a href="index.html" class="home-btn">
+                    <i class="fas fa-house"></i> Home
+                </a>
+                <i class="fas fa-heartbeat"></i>
+                <h1>HealthCare Pro - Dashboard</h1>
+            </div>
+            <div class="header-info">
+                <div class="emergency-alert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Emergency: Code Blue - ICU
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">LM</div>
+                    <div>
+                        <div>Dr. Manikanta</div>
+                        <div style="font-size: 0.8rem;">Administrator</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="appointment.html"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+                <li><a href="doctor.html"><i class="fas fa-user-md"></i> Doctors</a></li>
+                <li><a href="department.html"><i class="fas fa-building"></i> Departments</a></li>
+                <li><a href="paitent.html"><i class="fas fa-procedures"></i> Patients</a></li>
+                <li><a href="payment.html"><i class="fas fa-credit-card"></i> Payments</a></li>
+                <li><a href="report.html"><i class="fas fa-chart-bar"></i> Reports</a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="help.html"><i class="fas fa-question-circle"></i> Help</a></li>
+            </ul>
+        </aside>
+
+        <!-- Dashboard Content -->
+        <main class="dashboard">
+            <!-- Key Metrics -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-users"></i> Patients</h2>
+                </div>
+                <div class="stat-value">1,248</div>
+                <div class="stat-label">Total Patients</div>
+                <div class="stat-change positive"><i class="fas fa-arrow-up"></i> 12% increase</div>
+                <div class="stats-container" style="margin-top: 1rem;">
+                    <div class="stat-card patients">
+                        <div class="stat-value">84</div>
+                        <div class="stat-label">Inpatient</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">1,164</div>
+                        <div class="stat-label">Outpatient</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-user-md"></i> Doctors</h2>
+                </div>
+                <div class="stat-value">48</div>
+                <div class="stat-label">Medical Staff</div>
+                <div class="stat-change positive"><i class="fas fa-arrow-up"></i> 3 new hires</div>
+                <div class="stats-container" style="margin-top: 1rem;">
+                    <div class="stat-card doctors">
+                        <div class="stat-value">36</div>
+                        <div class="stat-label">Available</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">On Leave</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-calendar-check"></i> Appointments</h2>
+                </div>
+                <div class="stat-value">64</div>
+                <div class="stat-label">Today's Appointments</div>
+                <div class="stat-change negative"><i class="fas fa-arrow-down"></i> 5% decrease</div>
+                <div class="stats-container" style="margin-top: 1rem;">
+                    <div class="stat-card appointments">
+                        <div class="stat-value">52</div>
+                        <div class="stat-label">Confirmed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revenue Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-indian-rupee-sign"></i> Revenue (₹) with GST</h2>
+                </div>
+                <div class="stat-value">₹2,48,560</div>
+                <div class="stat-label">This Month (Excl. GST)</div>
+                <div class="stat-change positive"><i class="fas fa-arrow-up"></i> 8.5% growth</div>
+
+                <div class="stats-container" style="margin-top: 1rem;">
+                    <div class="stat-card revenue">
+                        <div class="stat-value">₹48,250</div>
+                        <div class="stat-label">Weekly Avg. (Excl. GST)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">₹12,150</div>
+                        <div class="stat-label">Today (Excl. GST)</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1rem; font-size: 0.9rem; color: #444;">
+                    <strong>GST (18%) Included:</strong> ₹44,740 <br>
+                    <strong>Total Revenue (Incl. GST):</strong> ₹2,93,300
+                </div>
+            </div>
+
+            <!-- Revenue Trend Chart -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <h2><i class="fas fa-chart-line"></i> Revenue Trends</h2>
+                    <div>
+                        <select style="padding: 0.5rem; border-radius: 8px; border: 1px solid #ddd; background: white; transition: var(--transition);">
+                            <option>Last 7 Days</option>
+                            <option>Last 30 Days</option>
+                            <option>Last 6 Months</option>
+                            <option>Last Year</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Patient Distribution Chart -->
+            <div class="card half-width">
+                <div class="card-header">
+                    <h2><i class="fas fa-chart-pie"></i> Patient Distribution</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="patientChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Department Performance -->
+            <div class="card half-width">
+                <div class="card-header">
+                    <h2><i class="fas fa-clinic-medical"></i> Department Performance</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="departmentChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Upcoming Appointments -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <h2><i class="fas fa-calendar-day"></i> Today's Appointments</h2>
+                    <a href="#" style="color: var(--primary); text-decoration: none; transition: var(--transition);">View All <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <table class="appointments-table">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Department</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Robert Johnson</td>
+                            <td>Dr. Sarah Miller</td>
+                            <td>Cardiology</td>
+                            <td>09:00 AM</td>
+                            <td><span class="status confirmed">Confirmed</span></td>
+                        </tr>
+                        <tr>
+                            <td>Maria Garcia</td>
+                            <td>Dr. James Wilson</td>
+                            <td>Pediatrics</td>
+                            <td>09:30 AM</td>
+                            <td><span class="status confirmed">Confirmed</span></td>
+                        </tr>
+                        <tr>
+                            <td>David Smith</td>
+                            <td>Dr. Lisa Brown</td>
+                            <td>Orthopedics</td>
+                            <td>10:15 AM</td>
+                            <td><span class="status pending">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td>Jennifer Lee</td>
+                            <td>Dr. Michael Taylor</td>
+                            <td>Dermatology</td>
+                            <td>11:00 AM</td>
+                            <td><span class="status confirmed">Confirmed</span></td>
+                        </tr>
+                        <tr>
+                            <td>Thomas Clark</td>
+                            <td>Dr. Emily Davis</td>
+                            <td>Neurology</td>
+                            <td>11:45 AM</td>
+                            <td><span class="status cancelled">Cancelled</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <h2><i class="fas fa-bell"></i> Recent Activity & Notifications</h2>
+                </div>
+                <ul class="activity-feed">
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-user-injured"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>New Patient Admission</h4>
+                            <p>Michael Brown admitted to ICU with cardiac symptoms</p>
+                            <div class="activity-time">10 minutes ago</div>
+                        </div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-prescription"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>Prescription Filled</h4>
+                            <p>Dr. Wilson prescribed medication for patient #3847</p>
+                            <div class="activity-time">45 minutes ago</div>
+                        </div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-vial"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>Lab Results Ready</h4>
+                            <p>Blood test results available for patient #2941</p>
+                            <div class="activity-time">1 hour ago</div>
+                        </div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-calendar-times"></i>
+                        </div>
+                        <div class="activity-content">
+                            <h4>Appointment Cancelled</h4>
+                            <p>Jennifer Lee cancelled her 2:00 PM appointment</p>
+                            <div class="activity-time">2 hours ago</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2023 HealthCare Pro Management System. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+
+            // Define data sets for different time frames
+            const datasets = {
+                "Last 7 Days": {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    data: [34500, 38200, 39000, 36000, 41000, 45500, 48000]
+                },
+                "Last 30 Days": {
+                    labels: Array.from({ length: 30 }, (_, i) => `Day ${i + 1}`),
+                    data: Array.from({ length: 30 }, () => Math.floor(25000 + Math.random() * 25000))
+                },
+                "Last 6 Months": {
+                    labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                    data: [185000, 195000, 210000, 230000, 248560, 260000]
+                },
+                "Last Year": {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    data: [185000, 195000, 210000, 198000, 220000, 235000, 240000, 230000, 245000, 248560, 255000, 260000]
+                }
+            };
+
+            // Initial dataset (default: Last 7 Days)
+            const defaultRange = "Last 7 Days";
+            const initial = datasets[defaultRange];
+
+            const chart = new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: initial.labels,
+                    datasets: [
+                        {
+                            label: 'Revenue (Excl. GST)',
+                            data: initial.data,
+                            borderColor: '#1565c0',
+                            backgroundColor: 'rgba(21, 101, 192, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Revenue (Incl. GST)',
+                            data: initial.data.map(v => v * 1.18),
+                            borderColor: '#4CAF50',
+                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function (value) {
+                                    return '₹' + value.toLocaleString('en-IN');
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return context.dataset.label + ': ₹' + context.parsed.y.toLocaleString('en-IN');
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+
+            // Change dataset when dropdown is changed
+            const selector = document.querySelector('.card-header select');
+            selector.addEventListener('change', function () {
+                const range = this.value;
+                const newData = datasets[range];
+
+                chart.data.labels = newData.labels;
+                chart.data.datasets[0].data = newData.data;
+                chart.data.datasets[1].data = newData.data.map(v => v * 1.18);
+                chart.update();
+            });
+        });
+        
+        // ---------------------- Patient Distribution Pie Chart ----------------------
+        const patientCtx = document.getElementById('patientChart').getContext('2d');
+        new Chart(patientCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Male', 'Female', 'Children', 'Senior Citizens'],
+                datasets: [{
+                    label: 'Patient Demographics',
+                    data: [40, 35, 15, 10],
+                    backgroundColor: [
+                        'rgba(21, 101, 192, 0.8)',   // Male - Blue
+                        'rgba(244, 122, 191, 0.8)',   // Female - Pink
+                        'rgba(255, 193, 7, 0.8)',     // Children - Yellow
+                        'rgba(76, 175, 80, 0.8)'      // Seniors - Green
+                    ],
+                    borderColor: 'white',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.parsed}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // ---------------------- Department Performance Bar Chart ----------------------
+        const deptCtx = document.getElementById('departmentChart').getContext('2d');
+        new Chart(deptCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Cardiology', 'Neurology', 'Orthopedics', 'Pediatrics', 'Radiology', 'ENT'],
+                datasets: [{
+                    label: 'Patients Treated',
+                    data: [320, 280, 250, 400, 180, 210],
+                    backgroundColor: 'rgba(21, 101, 192, 0.7)',
+                    borderColor: '#1565c0',
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 100
+                        },
+                        title: {
+                            display: true,
+                            text: 'Number of Patients'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Departments'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.parsed.y} patients`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
